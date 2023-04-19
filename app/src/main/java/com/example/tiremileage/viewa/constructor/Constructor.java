@@ -40,7 +40,6 @@ public class Constructor extends Fragment {
     {
         adapter = new VinSpinnerAdapter(binding.constructor.getContext(), viewModel.allTracks.getValue());
         binding.autoCompleteTextView.setAdapter(adapter);
-        binding.autoCompleteTextView.setOnClickListener(v -> binding.autoCompleteTextView.showDropDown());
         binding.autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

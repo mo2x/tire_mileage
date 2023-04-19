@@ -73,11 +73,10 @@ public class VinSpinnerAdapter extends BaseAdapter implements Filterable {
                     filterResults.values = list;
                 }else {
                     List<Track> resultsList = new ArrayList<>();
-                    String searchStr = constraint.toString().toLowerCase();
-                    for(Track vinCorp:list){
-                        if(vinCorp.vin.indexOf(searchStr) == 0){
-                            resultsList.add(vinCorp);
-
+                    String searchStr = constraint.toString().toUpperCase();
+                    for(Track track:list){
+                        if(track.vin.indexOf(searchStr) == 0){
+                            resultsList.add(track);
                         }
                         filterResults.count = resultsList.size();
                         filterResults.values = resultsList;

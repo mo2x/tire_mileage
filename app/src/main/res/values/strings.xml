@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Tire mileage</string>
+
+    <string name="menu_item_settings">Settings</string>
+    <string name="menu_item_about_program">About program</string>
+
+    <string name="bottom_navigation_constructor">Constructor</string>
+    <string name="bottom_navigation_tires">Tires</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="toolbar_corps">Corps</string>
+    <string name="toolbar_tires">Tires</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

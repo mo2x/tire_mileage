@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                                                   android:layout_height="match_parent">
+
+    <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp" app:srcCompat="@drawable/m7513" android:id="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.0" app:layout_constraintVertical_bias="1.0"
+            android:scaleType="fitXY"/>
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="132dp" app:srcCompat="@drawable/connector" android:id="@+id/imageView8"
+            app:layout_constraintStart_toStartOf="@+id/imageView3"
+            app:layout_constraintEnd_toEndOf="@+id/imageView3"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="@+id/imageView3" app:layout_constraintHorizontal_bias="0.72"
+            app:layout_constraintVertical_bias="0.88"/>
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="132dp" app:srcCompat="@drawable/connector" android:id="@+id/imageView9"
+            app:layout_constraintStart_toStartOf="@+id/imageView3"
+            app:layout_constraintEnd_toEndOf="@+id/imageView3"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="@+id/imageView3" app:layout_constraintHorizontal_bias="0.86"
+            app:layout_constraintVertical_bias="0.88"/>
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="132dp" app:srcCompat="@drawable/connector" android:id="@+id/imageView5"
+            app:layout_constraintStart_toStartOf="@+id/imageView3"
+            app:layout_constraintEnd_toEndOf="@+id/imageView3"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="@+id/imageView3" app:layout_constraintHorizontal_bias="0.85"
+            app:layout_constraintVertical_bias="0.39"/>
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="132dp" app:srcCompat="@drawable/connector" android:id="@+id/imageView6"
+            app:layout_constraintStart_toStartOf="@+id/imageView3"
+            app:layout_constraintEnd_toEndOf="@+id/imageView3"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="@+id/imageView3" app:layout_constraintHorizontal_bias="0.17"
+            app:layout_constraintVertical_bias="0.88"/>
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="132dp" app:srcCompat="@drawable/connector" android:id="@+id/imageView7"
+            app:layout_constraintStart_toStartOf="@+id/imageView3"
+            app:layout_constraintEnd_toEndOf="@+id/imageView3"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="@+id/imageView3" app:layout_constraintHorizontal_bias="0.31"
+            app:layout_constraintVertical_bias="0.88"/>
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="132dp" app:srcCompat="@drawable/connector" android:id="@+id/imageView4"
+            app:layout_constraintStart_toStartOf="@+id/imageView3"
+            app:layout_constraintEnd_toEndOf="@+id/imageView3"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="@+id/imageView3" app:layout_constraintHorizontal_bias="0.18"
+            app:layout_constraintVertical_bias="0.39"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

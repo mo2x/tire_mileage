@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".viewa.constructor.Constructor" android:id="@+id/constructor">
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <AutoCompleteTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" android:id="@+id/autoCompleteTextView"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:completionThreshold="0"
+                android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24"
+                app:layout_constraintStart_toEndOf="@+id/textView2"
+        />
+        <TextView
+                android:text="VIN:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/textView2"
+                app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+                android:textSize="34sp" android:textColor="@color/blue"/>
+        <HorizontalScrollView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" android:id="@+id/horizontalScrollView">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="match_parent"
+                          android:orientation="vertical"/>
+        </HorizontalScrollView>
+        <include android:layout_width="0dp" android:layout_height="0dp" layout="@layout/l7513"
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView"
+                 app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

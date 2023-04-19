@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/bottom_navigation_constructor" android:icon="@drawable/baseline_architecture_24"
+          android:id="@+id/constructor_navigation_item"/>
+    <item android:title="@string/bottom_navigation_tires" android:icon="@drawable/baseline_inbox_24"
+          android:id="@+id/tire_navigation_item"/>
+</menu>

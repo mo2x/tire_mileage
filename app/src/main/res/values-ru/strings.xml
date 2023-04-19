@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tire mileage</string>
+    <string name="menu_item_settings">Настройки</string>
+    <string name="menu_item_about_program">О программе</string>
+    <string name="bottom_navigation_constructor">Конструктор</string>
+    <string name="bottom_navigation_tires">Шины</string>
+</resources>

@@ -9,8 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import androidx.annotation.NonNull;
-import com.example.tiremileage.Repository;
-import com.example.tiremileage.VinCorp;
 import com.example.tiremileage.databinding.VinItemBinding;
 import com.example.tiremileage.room.Entities.Track;
 
@@ -52,7 +50,7 @@ public class VinSpinnerAdapter extends BaseAdapter implements Filterable {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         com.example.tiremileage.databinding.VinItemBinding binding = VinItemBinding.inflate(LayoutInflater.from(context), parent, false);
-        binding.textView.setText("VIN "+listFiltered.get(position).vin);
+        binding.textView.setText(listFiltered.get(position).vin);
         return binding.getRoot();
     }
 

@@ -4,6 +4,8 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
+import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.SortedList;
 import com.example.tiremileage.Repository;
 import com.example.tiremileage.room.DataBase;
 import com.example.tiremileage.room.Entities.Tire;
@@ -12,6 +14,7 @@ import com.example.tiremileage.room.Entities.Track;
 import java.util.List;
 
 public class ConstructorViewModel  extends AndroidViewModel {
+    MutableLiveData<String> currentFragRes;
     LiveData<List<Tire>> allTires;
     LiveData<List<Track>> allTracks;
     public ConstructorViewModel(Application application){
@@ -23,4 +26,5 @@ public class ConstructorViewModel  extends AndroidViewModel {
                 Repository.getAllTracks(application.getApplicationContext())
                         .onErrorReturn(error -> null));
     }
+
 }

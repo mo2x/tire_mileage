@@ -14,4 +14,6 @@ public interface TrackDao {
     void insertAllTires(Track... tracks);
     @Query("SELECT * FROM track")
     Flowable<List<Track>> getAllTracks();
+    @Query("SELECT * FROM track WHERE vin LIKE :inputVIN")
+    Track getTrackByVin(String inputVIN);
 }

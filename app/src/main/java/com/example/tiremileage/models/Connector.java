@@ -2,10 +2,6 @@ package com.example.tiremileage.models;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.DragEvent;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 
 public class Connector extends androidx.appcompat.widget.AppCompatImageView {

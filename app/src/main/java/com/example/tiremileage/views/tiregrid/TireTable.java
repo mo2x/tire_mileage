@@ -1,8 +1,6 @@
 package com.example.tiremileage.views.tiregrid;
 
 import android.os.Bundle;
-import android.widget.TableRow;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -10,11 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.lifecycle.ViewModelProvider;
-import com.example.tiremileage.Repository;
 import com.example.tiremileage.databinding.FragmentTireTableBinding;
-import com.example.tiremileage.room.DataBase;
 import com.example.tiremileage.room.Entities.Tire;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TireTable extends Fragment {
@@ -33,29 +30,37 @@ public class TireTable extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentTireTableBinding.inflate(inflater, container, false);
         viewModel.allTires.observe(getViewLifecycleOwner(), tires -> {
-            if (tires == null) {
-                TextView textView = new TextView(this.getContext());
-                textView.setText("Empty");
-                binding.table.addView(textView);
-            } else {
-                for (Tire tire: tires){
-
-                    TableRow tableRow = new TableRow(this.getContext());
-
-                    TextView textView = new TextView(this.getContext());
-                    textView.setText(String.valueOf(tire.id));
-                    tableRow.addView(textView);
-
-                    textView = new TextView(this.getContext());
-                    textView.setText(" Company: "+tire.maker_name);
-                    tableRow.addView(textView);
-
-                    binding.table.addView(tableRow);
+            binding.tireTable.clearData();
+            if (tires != null) {
+                for (Tire tire:tires) {
+                    List<String> raw = Arrays.asList(
+                            tire.serialNumber,
+                            String.valueOf(tire.km),
+                            tire.tSize,
+                            String.valueOf(tire.treadDepth),
+                            String.valueOf(tire.tkph),
+                            tire.kpa,
+                            String.valueOf(tire.p_kph),
+                            tire.maker_name
+                    );
+                    binding.tireTable.addRaw(raw);
                 }
             }
         });
         return binding.getRoot();
     }
+    /*
+<string-array name="Tires">
+    <item>Serial number</item>
+    <item>Mileage</item>
+    <item>Tire chamber</item>
+    <item>Tread Depth</item>
+    <item>Productivity</item>
+    <item>Current pressure</item>
+    <item>Nominal pressure</item>
+    <item>Maker Name</item>
+</string-array>
+*/
     @Override
     public void onDestroyView() {
         super.onDestroyView();

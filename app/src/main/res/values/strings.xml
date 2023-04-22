@@ -12,5 +12,15 @@
     <string name="title_notifications">Notifications</string>
     <string name="toolbar_corps">Corps</string>
     <string name="toolbar_tires">Tires</string>
+    <string-array name="tires">
+        <item>Serial number</item>
+        <item>Mileage</item>
+        <item>Tire chamber</item>
+        <item>Tread Depth</item>
+        <item>Productivity</item>
+        <item>Current pressure</item>
+        <item>Nominal pressure</item>
+        <item>Maker Name</item>
+    </string-array>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

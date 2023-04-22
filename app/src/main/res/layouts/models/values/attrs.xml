@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomTable">
+       <!-- <attr name="cs_subtitle" format="string"/> -->
+        <attr name="android:entries"/>
+        <attr name="table_columns" format="reference"/>
+        <attr name="android:checked" />
+    </declare-styleable>
+</resources>

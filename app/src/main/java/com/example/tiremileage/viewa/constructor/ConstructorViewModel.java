@@ -14,17 +14,20 @@ import com.example.tiremileage.room.Entities.Track;
 import java.util.List;
 
 public class ConstructorViewModel  extends AndroidViewModel {
-    MutableLiveData<String> currentFragRes;
+    private MutableLiveData<String> currentFragRes;
+
+    public LiveData<String> getCurrentFragRes() {
+        return currentFragRes;
+    }
+
+    Repository repository;
     LiveData<List<Tire>> allTires;
     LiveData<List<Track>> allTracks;
     public ConstructorViewModel(Application application){
         super(application);
-        allTires = LiveDataReactiveStreams.fromPublisher(
-                Repository.getAllTired(application.getApplicationContext())
-                        .onErrorReturn(error -> null));
-        allTracks = LiveDataReactiveStreams.fromPublisher(
-                Repository.getAllTracks(application.getApplicationContext())
-                        .onErrorReturn(error -> null));
+        repository = new Repository();
+        allTires = repository.getAllTired(application.getApplicationContext());
+        allTracks = repository.getAllTracks(application.getApplicationContext());
     }
 
 }

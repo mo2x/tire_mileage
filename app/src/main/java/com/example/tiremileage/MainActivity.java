@@ -8,18 +8,14 @@ import android.os.Bundle;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import com.example.tiremileage.databinding.ActivityMainBinding;
-import com.example.tiremileage.viewa.constructor.ICallBack;
 import com.google.android.material.navigation.NavigationBarView;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
-
-public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener, ICallBack {
+public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
 
 
     ActivityMainBinding binding;
     NavController navController;
-    String currentFragRes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +35,5 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
             case (R.id.tire_navigation_item): navController.navigate(R.id.tireTable); break;
         }
         return true;
-    }
-
-    @Override
-    public String getString() {
-
-        return currentFragRes;
     }
 }

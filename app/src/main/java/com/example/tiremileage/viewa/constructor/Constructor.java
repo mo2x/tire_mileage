@@ -90,10 +90,4 @@ public class Constructor extends Fragment {
         if (resID == 0)
             return;
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
 }

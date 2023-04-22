@@ -1,6 +1,7 @@
-package com.example.tiremileage.viewa.constructor;
+package com.example.tiremileage.views.constructor;
 
 import android.app.Application;
+import android.widget.PopupWindow;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
@@ -20,14 +21,18 @@ public class ConstructorViewModel  extends AndroidViewModel {
         return currentFragRes;
     }
 
+    Application application;
     Repository repository;
     LiveData<List<Tire>> allTires;
     LiveData<List<Track>> allTracks;
+    PopupWindow popupWindow;
+
     public ConstructorViewModel(Application application){
         super(application);
         repository = new Repository();
         allTires = repository.getAllTired(application.getApplicationContext());
         allTracks = repository.getAllTracks(application.getApplicationContext());
+        this.application = application;
     }
 
 }

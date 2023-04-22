@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".views.tiregrid.TireTable">
-    <com.example.tiremileage.models.CustomTable
+    <com.example.tiremileage.customItems.CustomTable
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:table_columns="@array/tires" android:id="@+id/tireTable"/>

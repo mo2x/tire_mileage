@@ -20,7 +20,7 @@
             app:layout_constraintBottom_toBottomOf="@id/mainImage7827" app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintVertical_bias="0.0">
 
-        <com.example.tiremileage.models.Connector
+        <com.example.tiremileage.customItems.Connector
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:id="@+id/connector11"
@@ -29,7 +29,7 @@
                 app:layout_constraintVertical_bias="0.41" app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_percent="0.2" app:layout_constraintWidth_percent="0.115"
                 app:layout_constraintHorizontal_bias="0.28" android:background="@drawable/connector"/>
-        <com.example.tiremileage.models.Connector
+        <com.example.tiremileage.customItems.Connector
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:id="@+id/connector12"
@@ -38,7 +38,7 @@
                 app:layout_constraintVertical_bias="0.41" app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_percent="0.2" app:layout_constraintWidth_percent="0.115"
                 app:layout_constraintHorizontal_bias="0.74" android:background="@drawable/connector"/>
-        <com.example.tiremileage.models.Connector
+        <com.example.tiremileage.customItems.Connector
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:id="@+id/connector21"
@@ -47,7 +47,7 @@
                 app:layout_constraintVertical_bias="0.95" app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_percent="0.2" app:layout_constraintWidth_percent="0.115"
                 app:layout_constraintHorizontal_bias="0.27" android:background="@drawable/connector"/>
-        <com.example.tiremileage.models.Connector
+        <com.example.tiremileage.customItems.Connector
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:id="@+id/connector22"

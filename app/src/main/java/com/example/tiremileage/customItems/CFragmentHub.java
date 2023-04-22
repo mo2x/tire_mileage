@@ -1,4 +1,4 @@
-package com.example.tiremileage.models;
+package com.example.tiremileage.customItems;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -17,4 +17,6 @@ public interface TireDao {
     void delete(Tire tire);
     @Query("SELECT * FROM tire")
     Flowable<List<Tire>> getAllTires();
+    @Query("SELECT * FROM tire WHERE id = :id ")
+    Flowable<Tire> getTireByID(int id);
 }

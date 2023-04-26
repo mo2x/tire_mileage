@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
@@ -20,7 +21,9 @@ import java.util.List;
 
 public class Repository {
 
+    TireDao tireDao;
     public static class TireShadowBuilder extends View.DragShadowBuilder {
+
 
         Drawable shadow;
         ImageView imageView;
@@ -29,6 +32,7 @@ public class Repository {
             this.imageView = imageView;
             shadow = imageView.getDrawable();
         }
+
 
         @Override
         public void onProvideShadowMetrics(Point outShadowSize, Point outShadowTouchPoint) {
@@ -61,15 +65,20 @@ public class Repository {
                         .getAllTracks());
     }
 
-    public LiveData<Tire> getTireByID(Context context, int id){
-        return LiveDataReactiveStreams
-                .fromPublisher(DataBase
+    public Tire getTireByID(Context context, int id){
+        return DataBase
                         .getDataBase(context.getApplicationContext())
                         .tireDao()
-                        .getTireByID(id));
+                        .getTireByID(id);
     }
 
     public Track getTrackByVin(Context context, String VIN){
         return DataBase.getDataBase(context.getApplicationContext()).trackDao().getTrackByVin(VIN);
+    }
+
+    public static Track currentTrack;
+    @WorkerThread
+    public void update(Context context, Tire tire){
+        DataBase.getDataBase(context.getApplicationContext()).tireDao().update(tire);
     }
 }

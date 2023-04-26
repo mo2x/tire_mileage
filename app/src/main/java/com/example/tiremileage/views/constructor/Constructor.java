@@ -1,10 +1,9 @@
 package com.example.tiremileage.views.constructor;
 
+import android.content.ClipDescription;
 import android.os.Bundle;
-import android.widget.Adapter;
+import android.view.DragEvent;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,18 +12,25 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.tiremileage.R;
+import com.example.tiremileage.Repository;
 import com.example.tiremileage.SpinnerAdapter;
 import com.example.tiremileage.customItems.CFragmentHub;
+import com.example.tiremileage.customItems.Connector;
 import com.example.tiremileage.customItems.TireItem;
 import com.example.tiremileage.databinding.FragmentConstructorBinding;
 import com.example.tiremileage.room.Entities.Tire;
-import com.example.tiremileage.room.Entities.Track;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
+import static android.view.View.VISIBLE;
+import static androidx.databinding.adapters.ImageViewBindingAdapter.setImageDrawable;
 
 public class Constructor extends Fragment {
 
     FragmentConstructorBinding binding;
     ConstructorViewModel viewModel;
+    boolean isIn = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,14 +50,62 @@ public class Constructor extends Fragment {
         viewModel.allTires.observe(getViewLifecycleOwner(), tires -> {
             binding.scrollLayout.removeAllViews();
             for (Tire tire: tires) {
-                TireItem tireItem = new TireItem(getContext());
-                tireItem.setTire(tire);
-                binding.scrollLayout.addView(tireItem);
+                if (Objects.equals(tire.vin, "-")) {
+                    TireItem tireItem = new TireItem(getContext());
+                    tireItem.setTire(tire);
+                    binding.scrollLayout.addView(tireItem);
+                }
             }
-            viewModel.allTires.removeObservers(getViewLifecycleOwner());
+            //viewModel.allTires.removeObservers(getViewLifecycleOwner());
         });
         viewModel.allTracks.observe(getViewLifecycleOwner(), tracks -> {
                 binding.spinner.setAdapter(new SpinnerAdapter(tracks));
+        });
+        binding.horizontalScrollView.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+
+                View dragView = (View) event.getLocalState();
+                switch (event.getAction()) {
+                    case DragEvent.ACTION_DRAG_STARTED:
+                        isIn = false;
+                        break;
+
+                    case DragEvent.ACTION_DRAG_ENTERED:
+                        isIn = true;
+                        break;
+
+                    case DragEvent.ACTION_DRAG_EXITED:
+                        isIn = false;
+                        break;
+
+                    case DragEvent.ACTION_DRAG_LOCATION:
+
+                        break;
+
+                    case DragEvent.ACTION_DRAG_ENDED:
+                        if (!event.getResult())
+                            dragView.setVisibility(VISIBLE);
+
+                        break;
+
+                    case DragEvent.ACTION_DROP:
+                        if (isIn) {
+                            if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+                                if (event.getClipDescription().getLabel().toString().equals("CTire")) {
+                                    Connector item = (Connector) dragView;
+                                    item.returnTire();
+                                    item.setImageDrawable(null);
+                                    item.setVisibility(VISIBLE);
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
         });
         binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -61,6 +115,7 @@ public class Constructor extends Fragment {
                 Fragment fragment = new CFragmentHub();
                 Bundle bundle = new Bundle();
                 String model = viewModel.allTracks.getValue().get(position).model;
+                viewModel.postCurrentTrack(viewModel.allTracks.getValue().get(position));
                 bundle.putString("Res", model);
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getFragmentManager();

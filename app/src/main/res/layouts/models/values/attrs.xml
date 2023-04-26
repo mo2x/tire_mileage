@@ -6,4 +6,7 @@
         <attr name="table_columns" format="reference"/>
         <attr name="android:checked" />
     </declare-styleable>
+    <declare-styleable name="Connector">
+        <attr name="position" format="string"/>
+    </declare-styleable>
 </resources>

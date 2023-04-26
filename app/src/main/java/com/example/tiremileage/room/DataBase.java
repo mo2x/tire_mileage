@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase;
 import com.example.tiremileage.room.Entities.Track;
 import com.example.tiremileage.room.Entities.Tire;
 
-@Database(entities = {Tire.class, Track.class}, version = 1)
+@Database(entities = {Tire.class, Track.class}, version = 2)
 abstract public class DataBase extends RoomDatabase {
     public abstract TireDao tireDao();
     public abstract TrackDao trackDao();

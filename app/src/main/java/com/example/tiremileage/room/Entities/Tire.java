@@ -28,6 +28,8 @@ public class Tire {
     public String maker_name;
     @ColumnInfo(name = "parent_vin")
     public String vin;
+    @ColumnInfo(name = "pos")
+    public String pos;
 }
 
 

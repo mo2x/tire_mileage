@@ -23,6 +23,7 @@ public class TireItem extends LinearLayout {
     ImageView imageView;
     int id;
     Tire tire;
+    boolean isIn;
 
     TextView serNum;
     TextView millage;
@@ -61,7 +62,7 @@ public class TireItem extends LinearLayout {
                 DragShadowBuilder myShadow = new DragShadowBuilder(imageView);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    v.startDragAndDrop(dragData, myShadow, null, 0);
+                    v.startDragAndDrop(dragData, myShadow, v, 0);
                     v.setVisibility(INVISIBLE);
                 }
                 return true;
@@ -71,40 +72,40 @@ public class TireItem extends LinearLayout {
         setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View v, DragEvent event) {
+                View dragView = (View) event.getLocalState();
                 switch(event.getAction()) {
                     case DragEvent.ACTION_DRAG_STARTED:
-                        Log.d(msg, "Action is DragEvent.ACTION_DRAG_STARTED");
-                        // Do nothing
+                        isIn = false;
                         break;
 
                     case DragEvent.ACTION_DRAG_ENTERED:
-                        Log.d(msg, "Action is DragEvent.ACTION_DRAG_ENTERED");
-                        int x_cord = (int) event.getX();
-                        int y_cord = (int) event.getY();
+                        isIn = true;
                         break;
 
                     case DragEvent.ACTION_DRAG_EXITED :
-                        Log.d(msg, "Action is DragEvent.ACTION_DRAG_EXITED");
-                        x_cord = (int) event.getX();
-                        y_cord = (int) event.getY();
+                        isIn = false;
                         break;
 
                     case DragEvent.ACTION_DRAG_LOCATION  :
-                        Log.d(msg, "Action is DragEvent.ACTION_DRAG_LOCATION");
-                        x_cord = (int) event.getX();
-                        y_cord = (int) event.getY();
+
                         break;
 
                     case DragEvent.ACTION_DRAG_ENDED   :
-                        Log.d(msg, "Action is DragEvent.ACTION_DRAG_ENDED");
-
-                        // Do nothing
+                        if (!event.getResult())
+                            dragView.setVisibility(VISIBLE);
                         break;
 
                     case DragEvent.ACTION_DROP:
-                        Log.d(msg, "ACTION_DROP event");
-
-                        // Do nothing
+                        if (isIn) {
+                            if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+                                if (event.getClipDescription().getLabel().toString().equals("CTire")) {
+                                    Connector item = (Connector) dragView;
+                                    item.returnTire();
+                                    item.setImageDrawable(null);
+                                    item.setVisibility(VISIBLE);
+                                }
+                            }
+                        }
                         break;
                     default: break;
                 }

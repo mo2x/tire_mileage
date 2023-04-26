@@ -26,7 +26,7 @@
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="0.32" app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_percent="0.2" app:layout_constraintWidth_percent="0.115"
-                app:layout_constraintHorizontal_bias="0.15" android:background="@drawable/connector"/>
+                app:layout_constraintHorizontal_bias="0.15" android:background="@drawable/connector" app:position="11"/>
         <com.example.tiremileage.customItems.Connector
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -35,7 +35,7 @@
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="0.32" app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_percent="0.2" app:layout_constraintWidth_percent="0.115"
-                app:layout_constraintHorizontal_bias="0.85" android:background="@drawable/connector"/>
+                app:layout_constraintHorizontal_bias="0.85" android:background="@drawable/connector" app:position="12"/>
         <com.example.tiremileage.customItems.Connector
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -44,7 +44,7 @@
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="0.85" app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_percent="0.2" app:layout_constraintWidth_percent="0.115"
-                app:layout_constraintHorizontal_bias="0.20" android:background="@drawable/connector"/>
+                app:layout_constraintHorizontal_bias="0.20" android:background="@drawable/connector" app:position="21"/>
         <com.example.tiremileage.customItems.Connector
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -53,6 +53,6 @@
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="0.85" app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_percent="0.2" app:layout_constraintWidth_percent="0.115"
-                app:layout_constraintHorizontal_bias="0.80" android:background="@drawable/connector"/>
+                app:layout_constraintHorizontal_bias="0.80" android:background="@drawable/connector" app:position="22"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

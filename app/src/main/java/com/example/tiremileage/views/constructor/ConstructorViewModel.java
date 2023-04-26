@@ -26,6 +26,9 @@ public class ConstructorViewModel  extends AndroidViewModel {
     LiveData<List<Tire>> allTires;
     LiveData<List<Track>> allTracks;
     PopupWindow popupWindow;
+    public void postCurrentTrack(Track track){
+        repository.currentTrack = track;
+    }
 
     public ConstructorViewModel(Application application){
         super(application);

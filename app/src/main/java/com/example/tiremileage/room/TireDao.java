@@ -1,9 +1,7 @@
 package com.example.tiremileage.room;
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
+import androidx.lifecycle.LiveData;
+import androidx.room.*;
 import com.example.tiremileage.room.Entities.Tire;
 import io.reactivex.Flowable;
 
@@ -18,5 +16,7 @@ public interface TireDao {
     @Query("SELECT * FROM tire")
     Flowable<List<Tire>> getAllTires();
     @Query("SELECT * FROM tire WHERE id = :id ")
-    Flowable<Tire> getTireByID(int id);
+    Tire getTireByID(int id);
+    @Update
+    void update(Tire tire);
 }

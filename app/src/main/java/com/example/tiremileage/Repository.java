@@ -81,4 +81,10 @@ public class Repository {
     public void update(Context context, Tire tire){
         DataBase.getDataBase(context.getApplicationContext()).tireDao().update(tire);
     }
+    public Tire getTireByPos(Context context,String pos){
+        return DataBase
+                .getDataBase(context.getApplicationContext())
+                .tireDao()
+                .getTireByPos(pos);
+    }
 }

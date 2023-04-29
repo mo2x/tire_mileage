@@ -17,6 +17,8 @@ public interface TireDao {
     Flowable<List<Tire>> getAllTires();
     @Query("SELECT * FROM tire WHERE id = :id ")
     Tire getTireByID(int id);
+    @Query("SELECT * FROM tire WHERE pos = :pos ")
+    Tire getTireByPos(String pos);
     @Update
     void update(Tire tire);
 }

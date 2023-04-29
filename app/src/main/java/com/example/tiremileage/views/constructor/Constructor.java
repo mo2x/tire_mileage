@@ -117,6 +117,7 @@ public class Constructor extends Fragment {
                 String model = viewModel.allTracks.getValue().get(position).model;
                 viewModel.postCurrentTrack(viewModel.allTracks.getValue().get(position));
                 bundle.putString("Res", model);
+                bundle.putString("vin", viewModel.allTracks.getValue().get(position).vin);
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getFragmentManager();
                 assert fragmentManager != null;

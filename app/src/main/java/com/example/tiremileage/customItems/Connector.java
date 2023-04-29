@@ -3,6 +3,7 @@ package com.example.tiremileage.customItems;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.media.Image;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -11,27 +12,28 @@ import android.view.DragEvent;
 import android.view.View;
 import android.widget.ImageView;
 import androidx.annotation.Nullable;
+import com.example.tiremileage.R;
 import com.example.tiremileage.Repository;
 import com.example.tiremileage.room.Entities.Tire;
 
 public class Connector extends androidx.appcompat.widget.AppCompatImageView {
     boolean isIn = false;
-    private int position;
+    int position;
     int tireID = -1;
     ImageView imageView;
     public Connector(Context context) {
         super(context);
-        init(null, 0);
+        init(context,null, 0);
     }
 
     public Connector(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(attrs, 0);
+        init(context,attrs, 0);
     }
 
     public Connector(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(attrs,defStyleAttr);
+        init(context,attrs,defStyleAttr);
     }
 
     public void returnTire(){
@@ -40,7 +42,12 @@ public class Connector extends androidx.appcompat.widget.AppCompatImageView {
         thread.start();
     }
 
-    private void init(AttributeSet attrs, int n) {
+    private void init(Context context, AttributeSet attrs, int n) {
+
+
+        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.Connector, n, 0);
+        position = attributes.getInt(R.styleable.Connector_position, n);
+        attributes.recycle();
         setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -130,6 +137,7 @@ public class Connector extends androidx.appcompat.widget.AppCompatImageView {
         public void run() {
             Tire tire = repository.getTireByID(getContext(), data);
             tire.vin = Repository.currentTrack.vin;
+            tire.pos = String.valueOf(position);
             repository.update(getContext(),tire);
         }
     }
@@ -141,6 +149,7 @@ public class Connector extends androidx.appcompat.widget.AppCompatImageView {
         public void run(){
             Tire tire = repository.getTireByID(getContext(), tireID);
             tire.vin = "-";
+            tire.pos = "";
             repository.update(getContext(),tire);
             tireID = -1;
         }

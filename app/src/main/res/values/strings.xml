@@ -21,6 +21,8 @@
         <item>Current pressure</item>
         <item>Nominal pressure</item>
         <item>Maker Name</item>
+        <item>VIN</item>
+        <item>pos</item>
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

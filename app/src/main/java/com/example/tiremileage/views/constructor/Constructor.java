@@ -1,143 +1,158 @@
 package com.example.tiremileage.views.constructor;
 
+
+import android.annotation.SuppressLint;
 import android.content.ClipDescription;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.DragEvent;
 import android.widget.AdapterView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
-import com.example.tiremileage.R;
+
 import com.example.tiremileage.Repository;
 import com.example.tiremileage.SpinnerAdapter;
-import com.example.tiremileage.customItems.CFragmentHub;
+
 import com.example.tiremileage.customItems.Connector;
 import com.example.tiremileage.customItems.TireItem;
 import com.example.tiremileage.databinding.FragmentConstructorBinding;
 import com.example.tiremileage.room.Entities.Tire;
+import com.example.tiremileage.room.Entities.TrackWithValidTires;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Objects;
 
+import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static androidx.databinding.adapters.ImageViewBindingAdapter.setImageDrawable;
+import static androidx.core.content.ContextCompat.getDrawable;
 
 public class Constructor extends Fragment {
 
     FragmentConstructorBinding binding;
     ConstructorViewModel viewModel;
-    boolean isIn = false;
+    boolean isIn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(
                 this).get(ConstructorViewModel.class);
-
     }
 
-    int resID;
-    String pic;
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         binding = FragmentConstructorBinding.inflate(inflater, container, false);
-        viewModel.allTires.observe(getViewLifecycleOwner(), tires -> {
-            binding.scrollLayout.removeAllViews();
-            for (Tire tire: tires) {
-                if (Objects.equals(tire.vin, "-")) {
-                    TireItem tireItem = new TireItem(getContext());
-                    tireItem.setTire(tire);
-                    binding.scrollLayout.addView(tireItem);
-                }
-            }
-            //viewModel.allTires.removeObservers(getViewLifecycleOwner());
+
+        viewModel.allTracks.observe(getViewLifecycleOwner(), tracks ->
+                binding.spinner.setAdapter(new SpinnerAdapter(tracks)));
+
+        viewModel.tracksWithValidTires.observe(getViewLifecycleOwner(), trackWithValidTires -> {
+            if (viewModel.currentSpinPos.getValue() != null)
+                resetTireItems(trackWithValidTires.get(viewModel.currentSpinPos.getValue()));
         });
-        viewModel.allTracks.observe(getViewLifecycleOwner(), tracks -> {
-                binding.spinner.setAdapter(new SpinnerAdapter(tracks));
+
+        viewModel.currentSpinPos.observe(getViewLifecycleOwner(), integer -> {
+            binding.FL.removeAllViews();
+            List<TrackWithValidTires> tracksWithValidTires =
+                    Objects.requireNonNull(viewModel.tracksWithValidTires.getValue());
+            TrackWithValidTires trackWithValidTires = tracksWithValidTires.get(integer);
+            String model = trackWithValidTires.track.model;
+            @SuppressLint("DiscouragedApi") int modelLayout = getResources().
+                    getIdentifier("l" + model, "layout", requireActivity().getPackageName());
+            getLayoutInflater().inflate(modelLayout, binding.FL);
+            resetTireItems(trackWithValidTires);
         });
-        binding.horizontalScrollView.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View v, DragEvent event) {
 
-                View dragView = (View) event.getLocalState();
-                switch (event.getAction()) {
-                    case DragEvent.ACTION_DRAG_STARTED:
-                        isIn = false;
-                        break;
-
-                    case DragEvent.ACTION_DRAG_ENTERED:
-                        isIn = true;
-                        break;
-
-                    case DragEvent.ACTION_DRAG_EXITED:
-                        isIn = false;
-                        break;
-
-                    case DragEvent.ACTION_DRAG_LOCATION:
-
-                        break;
-
-                    case DragEvent.ACTION_DRAG_ENDED:
-                        if (!event.getResult())
-                            dragView.setVisibility(VISIBLE);
-
-                        break;
-
-                    case DragEvent.ACTION_DROP:
-                        if (isIn) {
-                            if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-                                if (event.getClipDescription().getLabel().toString().equals("CTire")) {
-                                    Connector item = (Connector) dragView;
-                                    item.returnTire();
-                                    item.setImageDrawable(null);
-                                    item.setVisibility(VISIBLE);
-                                }
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-                return true;
-            }
-        });
         binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Fragment fragment = new CFragmentHub();
-                Bundle bundle = new Bundle();
-                String model = viewModel.allTracks.getValue().get(position).model;
-                viewModel.postCurrentTrack(viewModel.allTracks.getValue().get(position));
-                bundle.putString("Res", model);
-                bundle.putString("vin", viewModel.allTracks.getValue().get(position).vin);
-                fragment.setArguments(bundle);
-                FragmentManager fragmentManager = getFragmentManager();
-                assert fragmentManager != null;
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.setReorderingAllowed(true);
-
-// Replace whatever is in the fragment_container view with this fragment
-                transaction.replace(R.id.FL, fragment);
-                transaction.addToBackStack(null);
-// Commit the transaction
-                transaction.commit();
+                viewModel.currentSpinPos.setValue(position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
+
+        binding.horizontalScrollView.setOnDragListener((v, event) -> {
+            View dragView =(View) event.getLocalState();
+            switch(event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                case DragEvent.ACTION_DRAG_EXITED :
+                    isIn = false;
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    isIn = true;
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED   :
+                    if (!event.getResult())
+                        if (dragView.getVisibility() == INVISIBLE) {
+                            dragView.post(() -> dragView.setVisibility(VISIBLE));
+                        }
+                    break;
+                case DragEvent.ACTION_DROP:
+                    if (!isIn) {
+                        return false;
+                    }
+                    if (event.getClipDescription() == null){
+                        return true;
+                    }
+                    if (!event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+                        return false;
+                    }
+                    if (!event.getClipDescription().getLabel().toString().equals("tire")) {
+                        return false;
+                    }
+                    CharSequence draggedData = event.getClipData().getItemAt(0).getText();
+                    int tireID = Integer.parseInt(draggedData.toString());
+                    Repository repository = new Repository();
+                    repository.updateTirePosByID(requireContext(),tireID, "0");
+                    break;
+
+                default: break;
+            }
+
+            return true;
+
+
+        });
+
         return binding.getRoot();
     }
 
-
+    private void resetTireItems(TrackWithValidTires trackWithValidTires) {
+        binding.scrollLayout.removeAllViews();
+        ConstraintLayout connectorLay = (ConstraintLayout) binding.FL.getChildAt(1);
+        for (int i = 0; i < connectorLay.getChildCount(); i++) {
+            Connector connector = (Connector) connectorLay.getChildAt(i);
+            connector.setImageDrawable(null);
+            connector.setVisibility(VISIBLE);
+        }
+        for (Tire tire : trackWithValidTires.tires) {
+            if (Objects.equals(tire.pos, "0")) {
+                TireItem tireItem = new TireItem(getContext());
+                tireItem.setTire(tire);
+                binding.scrollLayout.addView(tireItem);
+            } else {
+                for (int i = 0; i < connectorLay.getChildCount(); i++) {
+                    Connector connector = (Connector) connectorLay.getChildAt(i);
+                    if (connector.getPosition() == Integer.parseInt(tire.pos)) {
+                        String pic = tire.pic.replaceAll(".png", "");
+                        @SuppressLint("DiscouragedApi") int picID =
+                                getResources().getIdentifier(pic, "drawable", requireActivity().getPackageName());
+                        Drawable drawable = getDrawable(requireContext(), picID);
+                        connector.setImageDrawable(drawable);
+                        connector.setID(tire.id);
+                    }
+                }
+            }
+        }
+    }
 }

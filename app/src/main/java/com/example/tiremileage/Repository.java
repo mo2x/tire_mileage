@@ -1,56 +1,27 @@
 package com.example.tiremileage;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Point;
-import android.graphics.drawable.Drawable;
-import android.view.View;
-import android.widget.ImageView;
-import androidx.annotation.NonNull;
-import androidx.annotation.WorkerThread;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import com.example.tiremileage.room.DataBase;
 import com.example.tiremileage.room.Entities.Tire;
 import com.example.tiremileage.room.Entities.Track;
-import com.example.tiremileage.room.TireDao;
-import io.reactivex.Flowable;
+import com.example.tiremileage.room.Entities.TrackWithValidTires;
 
 import java.util.List;
 
 public class Repository {
 
-    TireDao tireDao;
-    public static class TireShadowBuilder extends View.DragShadowBuilder {
 
-
-        Drawable shadow;
-        ImageView imageView;
-        public TireShadowBuilder(ImageView imageView){
-            super(imageView);
-            this.imageView = imageView;
-            shadow = imageView.getDrawable();
-        }
-
-
-        @Override
-        public void onProvideShadowMetrics(Point outShadowSize, Point outShadowTouchPoint) {
-            super.onProvideShadowMetrics(outShadowSize, outShadowTouchPoint);
-            int width = imageView.getWidth();
-            int height = imageView.getHeight();
-            shadow.setBounds(0,0,width,height);
-            outShadowSize.set(width,height);
-            outShadowTouchPoint.set(width / 2, height / 2);
-        }
-
-        @Override
-        public void onDrawShadow(Canvas canvas) {
-            super.onDrawShadow(canvas);
-            shadow.draw(canvas);
-        }
+    public LiveData<List<TrackWithValidTires>> getTracksWithValidTires(Context context){
+        return LiveDataReactiveStreams
+                .fromPublisher(DataBase
+                .getDataBase(context.getApplicationContext())
+                .trackDao()
+                .getTracksWithValidTires());
     }
-    public LiveData<List<Tire>> getAllTired(Context context){
+
+    public LiveData<List<Tire>> getAllTires(Context context){
         return LiveDataReactiveStreams
                 .fromPublisher(DataBase
                         .getDataBase(context.getApplicationContext())
@@ -64,27 +35,83 @@ public class Repository {
                         .trackDao()
                         .getAllTracks());
     }
-
-    public Tire getTireByID(Context context, int id){
-        return DataBase
-                        .getDataBase(context.getApplicationContext())
-                        .tireDao()
-                        .getTireByID(id);
-    }
-
-    public Track getTrackByVin(Context context, String VIN){
-        return DataBase.getDataBase(context.getApplicationContext()).trackDao().getTrackByVin(VIN);
-    }
-
-    public static Track currentTrack;
-    @WorkerThread
     public void update(Context context, Tire tire){
-        DataBase.getDataBase(context.getApplicationContext()).tireDao().update(tire);
+        UpdateThread updateThread = new UpdateThread(context, tire);
+        updateThread.start();
     }
-    public Tire getTireByPos(Context context,String pos){
-        return DataBase
-                .getDataBase(context.getApplicationContext())
-                .tireDao()
-                .getTireByPos(pos);
+
+    public void updateTirePosByID(Context context, int tireID, String newPos){
+        UpdateTirePosByIDThread updateThread = new UpdateTirePosByIDThread(context, tireID, newPos);
+        updateThread.start();
+    }
+
+    public void insert(Context context, Tire[] tires){
+        InsertThread insertThread = new InsertThread(context, tires);
+        insertThread.start();
+    }
+    public void insert(Context context, Track[] tracks){
+        InsertThread insertThread = new InsertThread(context, tracks);
+        insertThread.start();
+    }
+
+    private static class UpdateTirePosByIDThread extends Thread{
+        Context context;
+        int tireID;
+        String pos;
+        UpdateTirePosByIDThread(Context context, int tireID, String pos){
+            this.context = context;
+            this.tireID = tireID;
+            this.pos = pos;
+        }
+
+        @Override
+        public void run() {
+            Tire tire = DataBase
+                    .getDataBase(context.getApplicationContext())
+                    .tireDao()
+                    .getTireByID(tireID);
+
+            tire.pos = pos;
+
+            DataBase
+                    .getDataBase(context.getApplicationContext())
+                    .tireDao()
+                    .update(tire);
+
+        }
+    }
+
+    private static class UpdateThread extends Thread{
+        Context context;
+        Tire tire;
+        private UpdateThread(Context context, Tire tire){
+            this.tire = tire;
+            this.context = context;
+        }
+        @Override
+        public void run() {
+            DataBase.getDataBase(context.getApplicationContext()).tireDao().update(tire);
+        }
+    }
+    private static class InsertThread extends Thread{
+        Context context;
+        Tire[] tires;
+        Track[] tracks;
+        private InsertThread(Context context, Tire[] tires){
+            this.tracks = new Track[0];
+            this.tires = tires;
+            this.context = context;
+        }
+
+        private InsertThread(Context context, Track[] tracks){
+            this.tracks = tracks;
+            this.tires = new Tire[0];
+            this.context = context;
+        }
+        @Override
+        public void run() {
+            DataBase.getDataBase(context.getApplicationContext()).tireDao().insertAllTires(tires);
+            DataBase.getDataBase(context.getApplicationContext()).trackDao().insertAllTracks(tracks);
+        }
     }
 }

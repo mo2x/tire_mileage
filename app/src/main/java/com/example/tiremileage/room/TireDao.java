@@ -1,6 +1,5 @@
 package com.example.tiremileage.room;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import com.example.tiremileage.room.Entities.Tire;
 import io.reactivex.Flowable;
@@ -9,16 +8,12 @@ import java.util.List;
 
 @Dao
 public interface TireDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAllTires(Tire... tires);
-    @Delete
-    void delete(Tire tire);
     @Query("SELECT * FROM tire")
     Flowable<List<Tire>> getAllTires();
     @Query("SELECT * FROM tire WHERE id = :id ")
     Tire getTireByID(int id);
-    @Query("SELECT * FROM tire WHERE pos = :pos ")
-    Tire getTireByPos(String pos);
     @Update
     void update(Tire tire);
 }

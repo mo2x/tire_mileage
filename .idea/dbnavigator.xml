@@ -23,6 +23,7 @@
     <open-files />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="e71472b4-c056-4d24-935b-58990addbcc1" dataset="main.track" active-filter-id="" />
     <filter-actions connection-id="e71472b4-c056-4d24-935b-58990addbcc1" dataset="main.Tire" active-filter-id="" />
     <filter-actions connection-id="e71472b4-c056-4d24-935b-58990addbcc1" dataset="main.sqlite_sequence" active-filter-id="" />
     <filter-actions connection-id="e71472b4-c056-4d24-935b-58990addbcc1" dataset="main.Tracks" active-filter-id="" />

@@ -11,22 +11,22 @@ public class Tire {
     @ColumnInfo(name = "serial_num")
     public String serialNumber;
     @ColumnInfo(name = "km")
-    public float km;
+    public double km;
     @ColumnInfo(name = "t_size")
     public String tSize;
     @ColumnInfo(name = "tread_depth")
-    public float treadDepth;
+    public double treadDepth;
     @ColumnInfo(name = "tkph")
-    public float tkph;
+    public double tkph;
     @ColumnInfo(name = "kpa")
-    public String kpa;
+    public double kpa;
     @ColumnInfo(name = "p_kph")
-    public float p_kph;
+    public double p_kph;
     @ColumnInfo(name = "pic")
     public String pic;
     @ColumnInfo(name = "maker_name")
     public String maker_name;
-    @ColumnInfo(name = "parent_vin")
+    @ColumnInfo(name = "vin")
     public String vin;
     @ColumnInfo(name = "pos")
     public String pos;

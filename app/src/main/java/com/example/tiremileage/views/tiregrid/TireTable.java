@@ -39,9 +39,11 @@ public class TireTable extends Fragment {
                             tire.tSize,
                             String.valueOf(tire.treadDepth),
                             String.valueOf(tire.tkph),
-                            tire.kpa,
+                            String.valueOf(tire.kpa),
                             String.valueOf(tire.p_kph),
-                            tire.maker_name
+                            tire.maker_name,
+                            tire.vin,
+                            tire.pos
                     );
                     binding.tireTable.addRaw(raw);
                 }

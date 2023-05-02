@@ -8,18 +8,11 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import com.example.tiremileage.R;
-import com.example.tiremileage.databinding.CustomTableBinding;
-import com.example.tiremileage.room.Entities.Tire;
-import com.example.tiremileage.views.tiregrid.TireTable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,17 +21,17 @@ public class CustomTable extends LinearLayout {
 
     List<TextView> columnNamesViewList = new ArrayList<>();
 
-    public CustomTable(@NonNull @NotNull Context context) {
+    public CustomTable(@NonNull Context context) {
         super(context);
         init(context, null, 0);
     }
 
-    public CustomTable(@NonNull @NotNull Context context, @Nullable @org.jetbrains.annotations.Nullable AttributeSet attrs) {
+    public CustomTable(@NonNull Context context, @Nullable @org.jetbrains.annotations.Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context,attrs, 0);
     }
 
-    public CustomTable(@NonNull @NotNull Context context, @Nullable @org.jetbrains.annotations.Nullable AttributeSet attrs, int defStyleAttr) {
+    public CustomTable(@NonNull Context context, @Nullable @org.jetbrains.annotations.Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs, defStyleAttr);
     }

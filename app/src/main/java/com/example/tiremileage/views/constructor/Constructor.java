@@ -7,6 +7,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.DragEvent;
 import android.widget.AdapterView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -50,36 +52,7 @@ public class Constructor extends Fragment {
 
         binding = FragmentConstructorBinding.inflate(inflater, container, false);
 
-        viewModel.allTracks.observe(getViewLifecycleOwner(), tracks ->
-                binding.spinner.setAdapter(new SpinnerAdapter(tracks)));
 
-        viewModel.tracksWithValidTires.observe(getViewLifecycleOwner(), trackWithValidTires -> {
-            if (viewModel.currentSpinPos.getValue() != null)
-                resetTireItems(trackWithValidTires.get(viewModel.currentSpinPos.getValue()));
-        });
-
-        viewModel.currentSpinPos.observe(getViewLifecycleOwner(), integer -> {
-            binding.FL.removeAllViews();
-            List<TrackWithValidTires> tracksWithValidTires =
-                    Objects.requireNonNull(viewModel.tracksWithValidTires.getValue());
-            TrackWithValidTires trackWithValidTires = tracksWithValidTires.get(integer);
-            String model = trackWithValidTires.track.model;
-            @SuppressLint("DiscouragedApi") int modelLayout = getResources().
-                    getIdentifier("l" + model, "layout", requireActivity().getPackageName());
-            getLayoutInflater().inflate(modelLayout, binding.FL);
-            resetTireItems(trackWithValidTires);
-        });
-
-        binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                viewModel.currentSpinPos.setValue(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
 
         binding.horizontalScrollView.setOnDragListener((v, event) -> {
             View dragView =(View) event.getLocalState();
@@ -127,9 +100,47 @@ public class Constructor extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        viewModel.allTracks.observe(getViewLifecycleOwner(), tracks ->
+                binding.spinner.setAdapter(new SpinnerAdapter(tracks)));
+
+        viewModel.tracksWithValidTires.observe(getViewLifecycleOwner(), trackWithValidTires -> {
+            if (viewModel.currentSpinPos.getValue() != null)
+                resetTireItems(trackWithValidTires.get(viewModel.currentSpinPos.getValue()));
+        });
+
+        viewModel.currentSpinPos.observe(getViewLifecycleOwner(), integer -> {
+            binding.FL.removeAllViews();
+            List<TrackWithValidTires> tracksWithValidTires =
+                    Objects.requireNonNull(viewModel.tracksWithValidTires.getValue());
+            TrackWithValidTires trackWithValidTires = tracksWithValidTires.get(integer);
+            String model = trackWithValidTires.track.model;
+            @SuppressLint("DiscouragedApi") int modelLayout = getResources().
+                    getIdentifier("l" + model, "layout", requireActivity().getPackageName());
+            getLayoutInflater().inflate(modelLayout, binding.FL);
+            resetTireItems(trackWithValidTires);
+        });
+
+        binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                viewModel.currentSpinPos.setValue(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
     private void resetTireItems(TrackWithValidTires trackWithValidTires) {
         binding.scrollLayout.removeAllViews();
         ConstraintLayout connectorLay = (ConstraintLayout) binding.FL.getChildAt(1);
+        if (connectorLay == null)
+            return;
         for (int i = 0; i < connectorLay.getChildCount(); i++) {
             Connector connector = (Connector) connectorLay.getChildAt(i);
             connector.setImageDrawable(null);

@@ -5,4 +5,6 @@
           android:id="@+id/constructor_navigation_item"/>
     <item android:title="@string/bottom_navigation_tires" android:icon="@drawable/baseline_inbox_24"
           android:id="@+id/tire_navigation_item"/>
+    <item android:title="@string/bottom_navigation_analytics" android:icon="@drawable/baseline_analytics_24"
+          android:id="@+id/analytics_navigation_item"/>
 </menu>

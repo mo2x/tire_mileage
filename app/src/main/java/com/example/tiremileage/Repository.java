@@ -20,7 +20,6 @@ public class Repository {
                 .trackDao()
                 .getTracksWithValidTires());
     }
-
     public LiveData<List<Tire>> getAllTires(Context context){
         return LiveDataReactiveStreams
                 .fromPublisher(DataBase
@@ -53,7 +52,6 @@ public class Repository {
         InsertThread insertThread = new InsertThread(context, tracks);
         insertThread.start();
     }
-
     private static class UpdateTirePosByIDThread extends Thread{
         Context context;
         int tireID;
@@ -63,7 +61,6 @@ public class Repository {
             this.tireID = tireID;
             this.pos = pos;
         }
-
         @Override
         public void run() {
             Tire tire = DataBase
@@ -77,10 +74,8 @@ public class Repository {
                     .getDataBase(context.getApplicationContext())
                     .tireDao()
                     .update(tire);
-
         }
     }
-
     private static class UpdateThread extends Thread{
         Context context;
         Tire tire;
@@ -102,7 +97,6 @@ public class Repository {
             this.tires = tires;
             this.context = context;
         }
-
         private InsertThread(Context context, Track[] tracks){
             this.tracks = tracks;
             this.tires = new Tire[0];

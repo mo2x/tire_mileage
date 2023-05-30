@@ -11,7 +11,6 @@ import java.io.IOException;
 
 public class DBCreator extends RoomDatabase.Callback  {
     Context context;
-
     public DBCreator(Context context){
         this.context = context;
     }

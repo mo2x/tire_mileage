@@ -6,6 +6,7 @@
 
     <string name="bottom_navigation_constructor">Constructor</string>
     <string name="bottom_navigation_tires">Tires</string>
+    <string name="bottom_navigation_analytics">Analytics</string>
     <string name="title_activity_main2">MainActivity2</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>

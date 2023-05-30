@@ -13,7 +13,6 @@ import java.util.List;
 
 public class ConstructorViewModel  extends AndroidViewModel {
     MutableLiveData<Integer> currentSpinPos = new MutableLiveData<>();
-    Application application;
     Repository repository;
     LiveData<List<Tire>> allTires;
     LiveData<List<Track>> allTracks;
@@ -25,6 +24,5 @@ public class ConstructorViewModel  extends AndroidViewModel {
         allTires = repository.getAllTires(application.getApplicationContext());
         allTracks = repository.getAllTracks(application.getApplicationContext());
         tracksWithValidTires = repository.getTracksWithValidTires(application.getApplicationContext());
-        this.application = application;
     }
 }

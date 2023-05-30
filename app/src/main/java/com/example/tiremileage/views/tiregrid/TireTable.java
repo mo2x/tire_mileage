@@ -22,7 +22,7 @@ public class TireTable extends Fragment {
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(
-                this).get(TireTableViewModel.class);
+                requireActivity()).get(TireTableViewModel.class);
     }
 
     @Override

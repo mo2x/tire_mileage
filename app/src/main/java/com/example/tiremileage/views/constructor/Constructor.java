@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.tiremileage.Repository;
-import com.example.tiremileage.SpinnerAdapter;
+import com.example.tiremileage.customItems.SpinnerAdapter;
 
 import com.example.tiremileage.customItems.Connector;
 import com.example.tiremileage.customItems.TireItem;
@@ -43,16 +43,13 @@ public class Constructor extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(
-                this).get(ConstructorViewModel.class);
+                requireActivity()).get(ConstructorViewModel.class);
     }
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         binding = FragmentConstructorBinding.inflate(inflater, container, false);
-
-
 
         binding.horizontalScrollView.setOnDragListener((v, event) -> {
             View dragView =(View) event.getLocalState();
@@ -88,15 +85,10 @@ public class Constructor extends Fragment {
                     Repository repository = new Repository();
                     repository.updateTirePosByID(requireContext(),tireID, "0");
                     break;
-
                 default: break;
             }
-
             return true;
-
-
         });
-
         return binding.getRoot();
     }
 
@@ -114,14 +106,18 @@ public class Constructor extends Fragment {
 
         viewModel.currentSpinPos.observe(getViewLifecycleOwner(), integer -> {
             binding.FL.removeAllViews();
-            List<TrackWithValidTires> tracksWithValidTires =
-                    Objects.requireNonNull(viewModel.tracksWithValidTires.getValue());
-            TrackWithValidTires trackWithValidTires = tracksWithValidTires.get(integer);
-            String model = trackWithValidTires.track.model;
-            @SuppressLint("DiscouragedApi") int modelLayout = getResources().
-                    getIdentifier("l" + model, "layout", requireActivity().getPackageName());
-            getLayoutInflater().inflate(modelLayout, binding.FL);
-            resetTireItems(trackWithValidTires);
+            if (viewModel.tracksWithValidTires.getValue() != null) {
+                List<TrackWithValidTires> tracksWithValidTires =
+                        Objects.requireNonNull(viewModel.tracksWithValidTires.getValue());
+                TrackWithValidTires trackWithValidTires = tracksWithValidTires.get(integer);
+                String model = trackWithValidTires.track.model;
+                @SuppressLint("DiscouragedApi") int modelLayout = getResources().
+                        getIdentifier("l" + model, "layout", requireActivity().getPackageName());
+                getLayoutInflater().inflate(modelLayout, binding.FL);
+                resetTireItems(trackWithValidTires);
+            } else {
+                System.out.printf("null");
+            }
         });
 
         binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

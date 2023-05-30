@@ -12,11 +12,8 @@ import com.google.android.material.navigation.NavigationBarView;
 import org.jetbrains.annotations.NotNull;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
-
-
     ActivityMainBinding binding;
     NavController navController;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         switch (item.getItemId()) {
             case (R.id.constructor_navigation_item): navController.navigate(R.id.constructor);  break;
             case (R.id.tire_navigation_item): navController.navigate(R.id.tireTable); break;
+            case (R.id.analytics_navigation_item): navController.navigate(R.id.analyticsFragment);  break;
         }
         return true;
     }

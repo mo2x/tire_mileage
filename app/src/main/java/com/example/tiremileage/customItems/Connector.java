@@ -9,7 +9,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.View;
-import androidx.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import com.example.tiremileage.R;
 import com.example.tiremileage.Repository;
 public class Connector extends androidx.appcompat.widget.AppCompatImageView {

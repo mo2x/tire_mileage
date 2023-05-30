@@ -26,7 +26,6 @@ public class JSONParser {
             tires[i] = newTire;
             tires[i].id = tire.getInt("id");
             tires[i].serialNumber = tire.getString("sn");
-            //tires[i].pos = tire.getString("pos");
             tires[i].pos = "0";
             tires[i].km = tire.getDouble("km");
             tires[i].tSize = tire.getString("tsize");

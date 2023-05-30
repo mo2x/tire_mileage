@@ -4,11 +4,9 @@
             xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph"
             app:startDestination="@id/constructor">
     <fragment android:id="@+id/constructor" android:name="com.example.tiremileage.views.constructor.Constructor"
-              android:label="fragment_constructor" tools:layout="@layout/fragment_constructor">
-        <action android:id="@+id/action_constructor_to_tireTable" app:destination="@id/tireTable"/>
-    </fragment>
+              android:label="fragment_constructor" tools:layout="@layout/fragment_constructor"/>
     <fragment android:id="@+id/tireTable" android:name="com.example.tiremileage.views.tiregrid.TireTable"
-              android:label="fragment_tire_table" tools:layout="@layout/fragment_tire_table">
-        <action android:id="@+id/action_tireTable_to_constructor" app:destination="@id/constructor"/>
-    </fragment>
+              android:label="fragment_tire_table" tools:layout="@layout/fragment_tire_table"/>
+    <fragment android:id="@+id/analyticsFragment" android:name="com.example.tiremileage.views.analytic.Analytic"
+              android:label="fragment_analytics" tools:layout="@layout/fragment_analytics"/>
 </navigation>

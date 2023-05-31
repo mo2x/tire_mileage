@@ -17,7 +17,6 @@ public class ConstructorViewModel  extends AndroidViewModel {
     LiveData<List<Tire>> allTires;
     LiveData<List<Track>> allTracks;
     LiveData<List<TrackWithValidTires>> tracksWithValidTires;
-
     public ConstructorViewModel(Application application){
         super(application);
         repository = new Repository();

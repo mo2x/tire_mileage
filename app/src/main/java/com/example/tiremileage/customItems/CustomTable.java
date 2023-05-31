@@ -133,8 +133,6 @@ public class CustomTable extends LinearLayout {
             } else {
                 titles.get(i).setLayoutParams(new LinearLayout.LayoutParams(rowTextView.getMeasuredWidth(),LinearLayout.LayoutParams.WRAP_CONTENT));
             }
-
-            System.out.println(titles.get(i).getMeasuredWidth()+ " : "+ rowTextView.getMeasuredWidth());
         }
     }
 }

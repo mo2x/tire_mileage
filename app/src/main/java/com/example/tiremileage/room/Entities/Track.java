@@ -11,4 +11,6 @@ public class Track {
     public String vin;
     @ColumnInfo(name = "model")
     public String model;
+    @ColumnInfo(name="status")
+    public String status;
 }

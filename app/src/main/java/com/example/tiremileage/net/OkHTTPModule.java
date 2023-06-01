@@ -29,8 +29,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OkHTTPModule {
-    private MyCookieJar cookieJar = new MyCookieJar();
+    private final MyCookieJar cookieJar = new MyCookieJar();
     private final OkHttpClient client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
+
+    public void getCars(String url){
+        Request request = new Request.Builder().url(url+"/get_cars.php").build();
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new IOException("Запрос к серверу не был успешен: " +
+                        response.code() + " " + response.message());
+            }
+            // пример получения конкретного заголовка ответа
+            System.out.println("Server: " + response.header("Server"));
+            // вывод тела ответа
+            String string = response.body().string();
+
+
+        } catch (IOException e) {
+            System.out.println("Ошибка подключения: " + e);
+        }
+    }
     public void checkAuth(String url, Handler handler){
         Request request = new Request.Builder().url(url+"/check_session.php").build();
         try (Response response = client.newCall(request).execute()) {
@@ -94,7 +112,6 @@ public class OkHTTPModule {
     public void clear(){
         cookieJar.clear();
     }
-
     private static class MyCookieJar implements CookieJar {
         private List<Cookie> cookies;
         public MyCookieJar(){

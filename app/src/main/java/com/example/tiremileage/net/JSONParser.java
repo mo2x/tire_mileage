@@ -2,8 +2,8 @@ package com.example.tiremileage.net;
 
 import android.content.Context;
 import com.example.tiremileage.R;
+import com.example.tiremileage.room.Entities.Car;
 import com.example.tiremileage.room.Entities.Tire;
-import com.example.tiremileage.room.Entities.Track;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,20 +40,20 @@ public class JSONParser {
         return tires;
     }
 
-    public Track[] getTracks(Context context) throws JSONException, IOException{
+    public Car[] getCars(Context context) throws JSONException, IOException{
         InputStream inputStream = context.getResources().openRawResource(R.raw.car);
         JSONObject object = new JSONObject(convertStreamToString(inputStream));
         JSONArray items = object.getJSONArray("items");
-        Track[] tracks = new Track[items.length()];
+        Car[] cars = new Car[items.length()];
         for (int i = 0; i < items.length(); i++) {
             JSONObject track = items.getJSONObject(i);
-            Track newTrack = new Track();
-            tracks[i] = newTrack;
-            tracks[i].id = track.getInt("id");
-            tracks[i].model = track.getString("model");
-            tracks[i].vin = track.getString("vin");
+            Car newCar = new Car();
+            cars[i] = newCar;
+            cars[i].id = track.getInt("id");
+            cars[i].model = track.getString("model");
+            cars[i].vin = track.getString("vin");
         }
-        return tracks;
+        return cars;
     }
 
     private String convertStreamToString(InputStream stream) throws IOException {

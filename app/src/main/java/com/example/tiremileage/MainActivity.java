@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         };
 
         Repository.checkAuth(h);
+        new Repository().getCars();
     }
 
     public void startLogin() {

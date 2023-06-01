@@ -3,7 +3,7 @@ package com.example.tiremileage.room.Entities;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-@Entity(tableName = "tire")
+@Entity(tableName = "tires")
 public class Tire {
     @PrimaryKey
     @ColumnInfo(name = "id")

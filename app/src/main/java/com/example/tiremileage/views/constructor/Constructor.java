@@ -23,7 +23,6 @@ import com.example.tiremileage.customItems.Connector;
 import com.example.tiremileage.customItems.TireItem;
 import com.example.tiremileage.databinding.FragmentConstructorBinding;
 import com.example.tiremileage.room.Entities.Tire;
-import com.example.tiremileage.room.Entities.TrackWithValidTires;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -38,6 +37,7 @@ public class Constructor extends Fragment {
     FragmentConstructorBinding binding;
     ConstructorViewModel viewModel;
     boolean isIn;
+    SpinnerAdapter spinnerAdapter = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,70 +96,18 @@ public class Constructor extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel.allTracks.observe(getViewLifecycleOwner(), tracks ->
-                binding.spinner.setAdapter(new SpinnerAdapter(tracks)));
-
-        viewModel.tracksWithValidTires.observe(getViewLifecycleOwner(), trackWithValidTires -> {
-            if (viewModel.currentSpinPos.getValue() != null)
-                resetTireItems(trackWithValidTires.get(viewModel.currentSpinPos.getValue()));
+        viewModel.allTracks.observe(getViewLifecycleOwner(), tracks -> {
+            spinnerAdapter = new SpinnerAdapter(tracks);
+            binding.spinner.setAdapter(spinnerAdapter);
         });
-
-        viewModel.currentSpinPos.observe(getViewLifecycleOwner(), integer -> {
-            binding.FL.removeAllViews();
-            if (viewModel.tracksWithValidTires.getValue() != null) {
-                List<TrackWithValidTires> tracksWithValidTires =
-                        Objects.requireNonNull(viewModel.tracksWithValidTires.getValue());
-                TrackWithValidTires trackWithValidTires = tracksWithValidTires.get(integer);
-                String model = trackWithValidTires.track.model;
-                @SuppressLint("DiscouragedApi") int modelLayout = getResources().
-                        getIdentifier("l" + model, "layout", requireActivity().getPackageName());
-                getLayoutInflater().inflate(modelLayout, binding.FL);
-                resetTireItems(trackWithValidTires);
-            } else {
-                System.out.printf("null");
-            }
-        });
-
         binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                viewModel.currentSpinPos.setValue(position);
+                binding.spinner.getItemAtPosition(position);
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-    }
-
-    private void resetTireItems(TrackWithValidTires trackWithValidTires) {
-        binding.scrollLayout.removeAllViews();
-        ConstraintLayout connectorLay = (ConstraintLayout) binding.FL.getChildAt(1);
-        if (connectorLay == null)
-            return;
-        for (int i = 0; i < connectorLay.getChildCount(); i++) {
-            Connector connector = (Connector) connectorLay.getChildAt(i);
-            connector.setImageDrawable(null);
-            connector.setVisibility(VISIBLE);
-        }
-        for (Tire tire : trackWithValidTires.tires) {
-            if (Objects.equals(tire.pos, "0")) {
-                TireItem tireItem = new TireItem(getContext());
-                tireItem.setTire(tire);
-                binding.scrollLayout.addView(tireItem);
-            } else {
-                for (int i = 0; i < connectorLay.getChildCount(); i++) {
-                    Connector connector = (Connector) connectorLay.getChildAt(i);
-                    if (connector.getPosition() == Integer.parseInt(tire.pos)) {
-                        String pic = tire.pic.replaceAll(".png", "");
-                        @SuppressLint("DiscouragedApi") int picID =
-                                getResources().getIdentifier(pic, "drawable", requireActivity().getPackageName());
-                        Drawable drawable = getDrawable(requireContext(), picID);
-                        connector.setImageDrawable(drawable);
-                        connector.setID(tire.id);
-                    }
-                }
-            }
-        }
     }
 }

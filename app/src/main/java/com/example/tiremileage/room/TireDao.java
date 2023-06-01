@@ -10,9 +10,9 @@ import java.util.List;
 public interface TireDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAllTires(Tire... tires);
-    @Query("SELECT * FROM tire")
+    @Query("SELECT * FROM tires")
     Flowable<List<Tire>> getAllTires();
-    @Query("SELECT * FROM tire WHERE id = :id ")
+    @Query("SELECT * FROM tires WHERE id = :id ")
     Tire getTireByID(int id);
     @Update
     void update(Tire tire);

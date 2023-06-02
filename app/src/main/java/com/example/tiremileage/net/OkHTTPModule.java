@@ -7,6 +7,7 @@ import android.os.Handler;
 import com.example.tiremileage.Repository;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 
 /*.cookieJar(new CookieJar() {
         private final HashMap<HttpUrl, List<Cookie>> cookieStore = new HashMap<>();
@@ -31,23 +32,45 @@ import java.util.List;
 public class OkHTTPModule {
     private final MyCookieJar cookieJar = new MyCookieJar();
     private final OkHttpClient client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
-
     public void getCars(String url){
         Request request = new Request.Builder().url(url+"/get_cars.php").build();
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                throw new IOException("Запрос к серверу не был успешен: " +
-                        response.code() + " " + response.message());
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Request request = new Request.Builder().url(url+"/get_cars.php").build();
+                JSONParser jsonParser = new JSONParser();
+                try {
+                    new Repository().insert(jsonParser.getCars(client.newCall(request).execute().body().string()));
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
-            // пример получения конкретного заголовка ответа
-            System.out.println("Server: " + response.header("Server"));
-            // вывод тела ответа
-            String string = response.body().string();
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    public void getTires(String url){
+        Request request = new Request.Builder().url(url+"/get_tires.php").build();
 
-
-        } catch (IOException e) {
-            System.out.println("Ошибка подключения: " + e);
-        }
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Request request = new Request.Builder().url(url+"/get_tires.php").build();
+                JSONParser jsonParser = new JSONParser();
+                try {
+                    new Repository().insert(jsonParser.getTires(client.newCall(request).execute().body().string()));
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
     public void checkAuth(String url, Handler handler){
         Request request = new Request.Builder().url(url+"/check_session.php").build();

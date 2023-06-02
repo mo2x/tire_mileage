@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.example.tiremileage.R;
+import com.example.tiremileage.databinding.CustomTableBinding;
 
 import java.util.ArrayList;
 import java.util.List;

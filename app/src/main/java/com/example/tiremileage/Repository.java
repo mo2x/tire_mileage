@@ -1,5 +1,6 @@
 package com.example.tiremileage;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -20,6 +21,7 @@ public class Repository {
     static SharedPreferences sharedPreferences;
     static OkHTTPModule okHTTPModule;
     static public MutableLiveData<String> currentSpinVin = new MutableLiveData<>();
+    public static Application application;
 
     public void authorization(String login, String password, Handler handler){
         okHTTPModule.authorization(loginScriptUrl, login, password, handler);
@@ -27,6 +29,11 @@ public class Repository {
     public void getCars(){
         new Thread(() -> {
             okHTTPModule.getCars(loginScriptUrl);
+        }).start();
+    }
+    public void getTires(){
+        new Thread(() -> {
+            okHTTPModule.getTires(loginScriptUrl);
         }).start();
     }
     public static synchronized  void saveCookie(Cookie cookie){
@@ -65,6 +72,10 @@ public class Repository {
             okHTTPModule = new OkHTTPModule();
         }
         okHTTPModule.clear();
+        new Thread(() -> {
+            DataBase.getDataBase(application.getApplicationContext()).clearAllTables();
+        }).start();
+
     }
     public static void checkAuth(Handler handler){
         if (okHTTPModule == null){
@@ -98,12 +109,12 @@ public class Repository {
         updateThread.start();
     }
 
-    public void insert(Context context, Tire[] tires){
-        InsertThread insertThread = new InsertThread(context, tires);
+    public void insert(Tire[] tires){
+        InsertThread insertThread = new InsertThread(application.getApplicationContext(), tires);
         insertThread.start();
     }
-    public void insert(Context context, Car[] cars){
-        InsertThread insertThread = new InsertThread(context, cars);
+    public void insert(Car[] cars){
+        InsertThread insertThread = new InsertThread(application.getApplicationContext(), cars);
         insertThread.start();
     }
     private static class UpdateTirePosByIDThread extends Thread{

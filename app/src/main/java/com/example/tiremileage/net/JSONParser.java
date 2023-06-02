@@ -15,10 +15,8 @@ import java.io.InputStreamReader;
 
 public class JSONParser {
 
-    public Tire[] getTires(Context context) throws JSONException, IOException {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.tire_log);
-        JSONObject object = new JSONObject(convertStreamToString(inputStream));
-        JSONArray items = object.getJSONArray("items");
+    public Tire[] getTires(String string) throws JSONException, IOException {
+        JSONArray items = new JSONArray(string);
         Tire[] tires = new Tire[items.length()];
         for (int i = 0; i < items.length(); i++) {
             JSONObject tire = items.getJSONObject(i);
@@ -40,10 +38,10 @@ public class JSONParser {
         return tires;
     }
 
-    public Car[] getCars(Context context) throws JSONException, IOException{
-        InputStream inputStream = context.getResources().openRawResource(R.raw.car);
-        JSONObject object = new JSONObject(convertStreamToString(inputStream));
-        JSONArray items = object.getJSONArray("items");
+    public Car[] getCars(String string) throws JSONException, IOException{
+        //InputStream inputStream = context.getResources().openRawResource(R.raw.car);
+        //JSONObject object = new JSONObject(convertStreamToString(inputStream));
+        JSONArray items = new JSONArray(string);
         Car[] cars = new Car[items.length()];
         for (int i = 0; i < items.length(); i++) {
             JSONObject track = items.getJSONObject(i);

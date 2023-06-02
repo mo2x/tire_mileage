@@ -8,9 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
 import com.example.tiremileage.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationBarView;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
@@ -21,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Repository.application = getApplication();
         Repository.sharedPreferences = getPreferences(MODE_PRIVATE);
         h = new Handler(Looper.getMainLooper()) {
             @Override
@@ -31,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
                         startLogin();
                         break;
                     case 1:
+                        new Repository().getTires();
+                        new Repository().getCars();
                         binding = ActivityMainBinding.inflate(getLayoutInflater());
                         View view = binding.getRoot();
                         setContentView(view);
@@ -42,8 +49,12 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
             }
         };
 
+        Set<Integer> fragSet = new HashSet<>();
+        fragSet.add(R.id.constructor);
+        fragSet.add(R.id.tireTable);
+        fragSet.add(R.id.analyticsFragment)
         Repository.checkAuth(h);
-        new Repository().getCars();
+        AppBarConfiguration nav = new AppBarConfiguration(Set<Integer>{})
     }
 
     public void startLogin() {
@@ -57,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
             case (R.id.constructor_navigation_item): navController.navigate(R.id.constructor);  break;
             case (R.id.tire_navigation_item): navController.navigate(R.id.tireTable); break;
             case (R.id.analytics_navigation_item): navController.navigate(R.id.analyticsFragment);  break;
+            case (R.id.about_proj_navigation_item): navController.navigate(R.id.aboutProgram);  break;
         }
         return true;
     }

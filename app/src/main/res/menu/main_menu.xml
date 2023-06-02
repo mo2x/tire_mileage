@@ -7,4 +7,6 @@
           android:id="@+id/tire_navigation_item"/>
     <item android:title="@string/bottom_navigation_analytics" android:icon="@drawable/baseline_analytics_24"
           android:id="@+id/analytics_navigation_item"/>
+    <item android:title="About Program" android:icon="@drawable/baseline_analytics_24"
+          android:id="@+id/about_proj_navigation_item"/>
 </menu>

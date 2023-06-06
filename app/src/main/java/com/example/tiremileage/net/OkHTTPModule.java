@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
-import com.example.tiremileage.Repository;
+import com.example.tiremileage.repository.RepositoryManager;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -32,25 +32,30 @@ import java.util.List;
 public class OkHTTPModule {
     private final MyCookieJar cookieJar = new MyCookieJar();
     private final OkHttpClient client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
-    public void getCars(String url){
-        Request request = new Request.Builder().url(url+"/get_cars.php").build();
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Request request = new Request.Builder().url(url+"/get_cars.php").build();
-                JSONParser jsonParser = new JSONParser();
-                try {
-                    new Repository().insert(jsonParser.getCars(client.newCall(request).execute().body().string()));
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-            }
-        });
+    public String getModel(String url, int model){
+        String requestURL = url + "/get_models.php?"
+                +"number=" + model;
+        Request request = new Request.Builder().url(requestURL).build();
+        try {
+            String response = client.newCall(request).execute().body().string();
+            return response;
+        } catch (IOException e) {
+            return e.getMessage();
+        }
+    }
+    public String getCarsJSON(String url,String search, int firstEl, int countEl){
+        String requestURL = url + "/get_cars.php?"
+                +"search=" + search
+                +"&first_el=" + firstEl
+                +"&count_el=" + countEl;
+        Request request = new Request.Builder().url(requestURL).build();
+        try {
+            String response = client.newCall(request).execute().body().string();
+            return response;
+        } catch (IOException e) {
+            return e.getMessage();
+        }
     }
     public void getTires(String url){
         Request request = new Request.Builder().url(url+"/get_tires.php").build();
@@ -61,7 +66,7 @@ public class OkHTTPModule {
                 Request request = new Request.Builder().url(url+"/get_tires.php").build();
                 JSONParser jsonParser = new JSONParser();
                 try {
-                    new Repository().insert(jsonParser.getTires(client.newCall(request).execute().body().string()));
+                    RepositoryManager.getRepository().insert(jsonParser.getTires(client.newCall(request).execute().body().string()));
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -79,9 +84,7 @@ public class OkHTTPModule {
                 throw new IOException("Запрос к серверу не был успешен: " +
                         response.code() + " " + response.message());
             }
-            // пример получения конкретного заголовка ответа
-            System.out.println("Server: " + response.header("Server"));
-            // вывод тела ответа
+            assert response.body() != null;
             if (response.body().string().equals("0")) {
                 handler.sendEmptyMessage(0);
             } else {
@@ -138,7 +141,7 @@ public class OkHTTPModule {
     private static class MyCookieJar implements CookieJar {
         private List<Cookie> cookies;
         public MyCookieJar(){
-            cookies = Repository.loadCookie();
+            cookies = RepositoryManager.getRepository().loadCookie();
         }
 
         public void clear(){
@@ -148,7 +151,7 @@ public class OkHTTPModule {
         public void saveFromResponse(@NotNull HttpUrl url, @NotNull List<Cookie> cookies) {
             this.cookies =  cookies;
             new Thread(() -> {
-                Repository.saveCookie(cookies.get(0));
+                RepositoryManager.getRepository().saveCookie(cookies.get(0));
             }).start();
         }
         @Override

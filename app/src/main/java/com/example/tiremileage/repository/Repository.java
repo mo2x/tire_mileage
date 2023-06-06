@@ -1,4 +1,4 @@
-package com.example.tiremileage;
+package com.example.tiremileage.repository;
 
 import android.app.Application;
 import android.content.Context;
@@ -7,36 +7,74 @@ import android.os.Handler;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.MutableLiveData;
+import com.example.tiremileage.customItems.Status;
+import com.example.tiremileage.net.JSONParser;
 import com.example.tiremileage.net.OkHTTPModule;
 import com.example.tiremileage.room.DataBase;
 import com.example.tiremileage.room.Entities.Car;
 import com.example.tiremileage.room.Entities.Tire;
+import com.example.tiremileage.views.constructor.ConstructorViewModel;
 import okhttp3.Cookie;
+import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Repository {
-    static String loginScriptUrl = "http://f0822897.xsph.ru";
-    static SharedPreferences sharedPreferences;
-    static OkHTTPModule okHTTPModule;
-    static public MutableLiveData<String> currentSpinVin = new MutableLiveData<>();
-    public static Application application;
+    public Application application;
+    SharedPreferences sharedPreferences;
+    OkHTTPModule okHTTPModule;
+    String scriptUrl = "http://f0822897.xsph.ru";
+    boolean isRequested = false;
+    public MutableLiveData<String> currentSpinVin = new MutableLiveData<>();
+
+    public Repository(Application application){
+        this.application = application;
+        sharedPreferences = application.getSharedPreferences("myData", Context.MODE_PRIVATE);
+    }
+    public void initOkHTTPModule(){
+        okHTTPModule = new OkHTTPModule();
+    }
 
     public void authorization(String login, String password, Handler handler){
-        okHTTPModule.authorization(loginScriptUrl, login, password, handler);
+        okHTTPModule.authorization(scriptUrl, login, password, handler);
     }
-    public void getCars(){
+    public void getCars(String search, int firstEl, int countEl, ConstructorViewModel viewModel){
+        if (isRequested) return;
         new Thread(() -> {
-            okHTTPModule.getCars(loginScriptUrl);
+            isRequested = true;
+            String stringJSON = okHTTPModule.getCarsJSON(scriptUrl, search, firstEl, countEl);
+            try {
+                if (stringJSON.equals("timeout")) {
+                    viewModel.setStatus(Status.NO_INTERNET);
+                } else if (stringJSON.charAt(0)!='[') {
+                    viewModel.setStatus(Status.NO_SERVER_RESPONSE);
+                } else if (stringJSON.equals("[]")) {
+                    viewModel.setStatus(Status.ALL_LOADED);
+                } else {
+                    List<Car> cars = new ArrayList<>(Arrays.asList(JSONParser.getCars(stringJSON)));
+                    viewModel.addCars(cars);
+                    viewModel.setStatus(Status.LOADED);
+                }
+            } catch (JSONException | IOException e) {
+                throw new RuntimeException(e);
+            }
+            isRequested = false;
+        }).start();
+    }
+    public void getModel(int model){
+        new Thread(() -> {
+            String stringJSON = okHTTPModule.getModel(scriptUrl, model);
         }).start();
     }
     public void getTires(){
         new Thread(() -> {
-            okHTTPModule.getTires(loginScriptUrl);
+            okHTTPModule.getTires(scriptUrl);
         }).start();
     }
-    public static synchronized  void saveCookie(Cookie cookie){
+    public synchronized  void saveCookie(Cookie cookie){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("cookie.value", cookie.value());
         editor.putString("cookie.domain", cookie.domain());
@@ -44,7 +82,7 @@ public class Repository {
         editor.putString("cookie.path", cookie.path());
         editor.apply();
     }
-    public static List<Cookie> loadCookie(){
+    public List<Cookie> loadCookie(){
         if (sharedPreferences.getString("cookie.domain", "").equals("")){
             return null;
         }
@@ -59,7 +97,7 @@ public class Repository {
         list.add(cookie);
         return list;
     }
-    public static void clearSession(){
+    public void clearSession(){
         new Thread(() -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.remove("cookie.value");
@@ -77,12 +115,9 @@ public class Repository {
         }).start();
 
     }
-    public static void checkAuth(Handler handler){
-        if (okHTTPModule == null){
-            okHTTPModule = new OkHTTPModule();
-        }
+    public void checkAuthAsync(Handler handler){
         new Thread(() -> {
-            okHTTPModule.checkAuth(loginScriptUrl, handler);
+            okHTTPModule.checkAuth(scriptUrl, handler);
         }).start();
     }
     public LiveData<List<Tire>> getAllTires(Context context){

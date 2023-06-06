@@ -10,11 +10,12 @@ import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import com.example.tiremileage.databinding.LogInBinding;
+import com.example.tiremileage.repository.Repository;
+import com.example.tiremileage.repository.RepositoryManager;
 
 
 public class LoginActivity extends Activity{
     Handler h;
-    Repository repository = new Repository();
     LogInBinding logInBinding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,7 @@ public class LoginActivity extends Activity{
                             "Приветствую", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
+                        finish();
                         break;
                     case 1: Toast.makeText(getApplicationContext(),
                             "Неверный логин или пароль", Toast.LENGTH_SHORT).show();
@@ -45,7 +47,7 @@ public class LoginActivity extends Activity{
             }
         };
         logInBinding.authentication.setOnClickListener(v ->
-                repository.authorization(
+                RepositoryManager.getRepository().authorization(
                         logInBinding.editTextTextPersonName.getText().toString(),
                         logInBinding.editTextTextPassword.getText().toString(),
                         h));

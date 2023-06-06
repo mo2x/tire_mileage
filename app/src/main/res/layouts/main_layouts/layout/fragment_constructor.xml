@@ -14,7 +14,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinner"/>
+                app:layout_constraintTop_toBottomOf="@+id/vin_button"/>
         <HorizontalScrollView
                 android:layout_width="0dp"
                 android:layout_height="100dp"
@@ -25,9 +25,9 @@
                           android:orientation="horizontal" android:id="@+id/scrollLayout"
             />
         </HorizontalScrollView>
-        <Spinner
+        <Button
                 android:layout_width="0dp"
-                android:layout_height="50dp" android:id="@+id/spinner"
+                android:layout_height="50dp" android:id="@+id/vin_button"
                 app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

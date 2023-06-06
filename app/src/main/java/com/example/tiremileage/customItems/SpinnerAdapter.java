@@ -4,6 +4,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.TextView;
 import com.example.tiremileage.room.Entities.Car;
 
@@ -35,7 +36,7 @@ public class SpinnerAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView textView = new TextView(parent.getContext());
         textView.setPadding(30,30,30,30);
-        textView.setText(cars.get(position).vin);
+        textView.setText(cars.get(position - 1).vin);
         return textView;
     }
 }

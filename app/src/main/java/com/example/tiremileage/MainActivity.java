@@ -2,6 +2,7 @@ package com.example.tiremileage;
 
 import android.content.Intent;
 import android.os.*;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import androidx.annotation.NonNull;
@@ -10,6 +11,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import com.example.tiremileage.databinding.ActivityMainBinding;
+import com.example.tiremileage.repository.Repository;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarMenu;
 import com.google.android.material.navigation.NavigationBarView;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,36 +29,12 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Repository.application = getApplication();
-        Repository.sharedPreferences = getPreferences(MODE_PRIVATE);
-        h = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case 0:
-                        startLogin();
-                        break;
-                    case 1:
-                        new Repository().getTires();
-                        new Repository().getCars();
-                        binding = ActivityMainBinding.inflate(getLayoutInflater());
-                        View view = binding.getRoot();
-                        setContentView(view);
-                        NavHostFragment navHostFragment = binding.mainNav.getFragment();
-                        navController = navHostFragment.getNavController();
-                        binding.bottomNavigationView.setOnItemSelectedListener(MainActivity.this);
-                        break;
-                }
-            }
-        };
-
-        Set<Integer> fragSet = new HashSet<>();
-        fragSet.add(R.id.constructor);
-        fragSet.add(R.id.tireTable);
-        fragSet.add(R.id.analyticsFragment)
-        Repository.checkAuth(h);
-        AppBarConfiguration nav = new AppBarConfiguration(Set<Integer>{})
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        NavHostFragment navHostFragment = binding.mainNav.getFragment();
+        navController = navHostFragment.getNavController();
+        binding.bottomNavigationView.setOnItemSelectedListener(MainActivity.this);
+        setContentView(view);
     }
 
     public void startLogin() {
@@ -71,5 +51,11 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
             case (R.id.about_proj_navigation_item): navController.navigate(R.id.aboutProgram);  break;
         }
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

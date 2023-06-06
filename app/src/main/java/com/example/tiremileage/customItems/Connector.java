@@ -9,9 +9,10 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.View;
+import com.example.tiremileage.repository.RepositoryManager;
 import org.jetbrains.annotations.Nullable;
 import com.example.tiremileage.R;
-import com.example.tiremileage.Repository;
+import com.example.tiremileage.repository.Repository;
 public class Connector extends androidx.appcompat.widget.AppCompatImageView {
 
     boolean isIn = false;
@@ -93,8 +94,7 @@ public class Connector extends androidx.appcompat.widget.AppCompatImageView {
                     }
                     CharSequence draggedData = event.getClipData().getItemAt(0).getText();
                     tireID = Integer.parseInt(draggedData.toString());
-                    Repository repository = new Repository();
-                    repository.updateTirePosByID(context,tireID,String.valueOf(position));
+                    RepositoryManager.getRepository().updateTirePosByID(context,tireID,String.valueOf(position));
                     break;
 
                 default: break;

@@ -17,7 +17,6 @@ abstract public class DataBase extends RoomDatabase {
     public static DataBase getDataBase(Context context) {
         if (INSTANCE == null) synchronized (DataBase.class) {
             INSTANCE = Room.databaseBuilder(context, DataBase.class, "DB.db").
-                    //createFromAsset("db/DBTireTrack.db").
                     fallbackToDestructiveMigration().
                     build();
         }

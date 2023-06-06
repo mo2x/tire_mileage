@@ -13,6 +13,10 @@
     <string name="title_notifications">Notifications</string>
     <string name="toolbar_corps">Corps</string>
     <string name="toolbar_tires">Tires</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="authentication">Authentication</string>
     <string-array name="tires">
         <item>Serial number</item>
         <item>Mileage</item>
@@ -25,5 +29,9 @@
         <item>VIN</item>
         <item>pos</item>
     </string-array>
+    <string name="get_vin">Choose the VIN id</string>
+    <string name="search_vin">Search</string>
+    <string name="refresh_string">Refresh</string>
+    <string name="no_server_response">Server no answer</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

@@ -69,7 +69,6 @@ dependencies {
     implementation "androidx.room:room-rxjava2:2.5.1"
     implementation "androidx.lifecycle:lifecycle-reactivestreams:2.6.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
-    //implementation "android.arch.persistence.room:rxjava2:1.1.1"
     implementation "androidx.room:room-runtime:2.5.1"
     annotationProcessor "androidx.room:room-compiler:2.5.1"
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'

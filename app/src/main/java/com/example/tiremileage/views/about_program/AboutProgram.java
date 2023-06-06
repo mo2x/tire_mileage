@@ -7,10 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.tiremileage.LoginActivity;
-import com.example.tiremileage.R;
-import com.example.tiremileage.Repository;
+import com.example.tiremileage.repository.Repository;
 import com.example.tiremileage.databinding.FragmentAboutProgramBinding;
-import com.example.tiremileage.databinding.FragmentConstructorBinding;
+import com.example.tiremileage.repository.RepositoryManager;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 import static androidx.databinding.DataBindingUtil.setContentView;
 
@@ -23,7 +25,7 @@ public class AboutProgram extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentAboutProgramBinding.inflate(inflater, container, false);
@@ -31,9 +33,10 @@ public class AboutProgram extends Fragment {
         binding.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Repository.clearSession();
-                Intent intent = new Intent(Repository.application.getApplicationContext(), LoginActivity.class);
+                RepositoryManager.getRepository().clearSession();
+                Intent intent = new Intent(RepositoryManager.getRepository().application.getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
+                requireActivity().finish();
             }
         });
         return binding.getRoot();

@@ -9,15 +9,23 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.View;
-import com.example.tiremileage.repository.RepositoryManager;
+import android.view.ViewGroup;
+import android.widget.Toast;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.example.tiremileage.room.Entities.Tire;
 import org.jetbrains.annotations.Nullable;
 import com.example.tiremileage.R;
-import com.example.tiremileage.repository.Repository;
+
 public class Connector extends androidx.appcompat.widget.AppCompatImageView {
 
+    Tire tire;
     boolean isIn = false;
     private int position;
-    private int tireID = -1;
+    private String tireSize;
+    private double left;
+    private double top;
+    private double heightP;
+    private double widthP;
     public Connector(Context context) {
         super(context);
         init(context,null, 0);
@@ -36,14 +44,18 @@ public class Connector extends androidx.appcompat.widget.AppCompatImageView {
 
     private void init(Context context, AttributeSet attrs, int n) {
 
-
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.Connector, n, 0);
         position = attributes.getInt(R.styleable.Connector_position, n);
         attributes.recycle();
+        setOnClickListener(v -> {
+            Toast toast = Toast.makeText(getContext(), "", Toast.LENGTH_SHORT);
+            toast.setText("Id:"+ position +";   Tire size:"+tireSize);
+            toast.show();
+        });
         setOnLongClickListener(v -> {
-            if (getDrawable() == null || tireID == -1)
+            if (getDrawable() == null || tire == null)
                 return false;
-            ClipData.Item item = new ClipData.Item(String.valueOf(tireID));
+            ClipData.Item item = new ClipData.Item(String.valueOf(tire.id));
             String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
 
             ClipData dragData = new ClipData("tire",mimeTypes, item);
@@ -93,8 +105,8 @@ public class Connector extends androidx.appcompat.widget.AppCompatImageView {
                         return false;
                     }
                     CharSequence draggedData = event.getClipData().getItemAt(0).getText();
-                    tireID = Integer.parseInt(draggedData.toString());
-                    RepositoryManager.getRepository().updateTirePosByID(context,tireID,String.valueOf(position));
+                    tire.id = Integer.parseInt(draggedData.toString());
+                    //RepositoryManager.getRepository().updateTirePosByID(context,tireID,String.valueOf(position));
                     break;
 
                 default: break;
@@ -105,10 +117,51 @@ public class Connector extends androidx.appcompat.widget.AppCompatImageView {
 
         });
     }
-    public void setID(int id){
-        tireID = id;
-    }
     public int getPosition() {
         return position;
+    }
+    public void setPosition(int pos){position = pos;}
+
+    public String getTireSizeDouble() {
+        return tireSize;
+    }
+
+    public void setTireSize(String tireSize) {
+        this.tireSize = tireSize;
+    }
+
+    public double getLeftDouble() {
+        return left;
+    }
+
+    public void setLeftDouble(double left) {
+        this.left = left;
+    }
+
+    public double getTopDouble() {
+        return top;
+    }
+
+    public void setTopDouble(double top) {
+        this.top = top;
+    }
+    public void setHeightP(double heightP){
+        this.heightP = heightP;
+    }
+    public double getHeightP(){
+        return heightP;
+    }
+    public void setWidthP(double widthP){
+        this.widthP = widthP;
+    }
+    public double getWidthP(){
+        return widthP;
+    }
+
+    public void setTire(Tire tire) {
+        this.tire = tire;
+    }
+    public Tire getTire() {
+        return tire;
     }
 }

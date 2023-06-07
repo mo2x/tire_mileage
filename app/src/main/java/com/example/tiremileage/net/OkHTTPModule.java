@@ -33,7 +33,7 @@ public class OkHTTPModule {
     private final MyCookieJar cookieJar = new MyCookieJar();
     private final OkHttpClient client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
 
-    public String getModel(String url, int model){
+    public String getModelJSON(String url, String model){
         String requestURL = url + "/get_models.php?"
                 +"number=" + model;
         Request request = new Request.Builder().url(requestURL).build();
@@ -57,25 +57,19 @@ public class OkHTTPModule {
             return e.getMessage();
         }
     }
-    public void getTires(String url){
-        Request request = new Request.Builder().url(url+"/get_tires.php").build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Request request = new Request.Builder().url(url+"/get_tires.php").build();
-                JSONParser jsonParser = new JSONParser();
-                try {
-                    RepositoryManager.getRepository().insert(jsonParser.getTires(client.newCall(request).execute().body().string()));
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-            }
-        });
+    public String getTiresJSON(String url, String vin, String[] tireSizes){
+        FormBody.Builder builder = new FormBody.Builder();
+        if (vin != null){
+            builder.add("VIN",vin);
+        }
+        FormBody formBody = builder.build();
+        Request request = new Request.Builder().post(formBody).url(url+"/get_tires.php").build();
+        try {
+            String response = client.newCall(request).execute().body().string();
+            return response;
+        } catch (IOException e) {
+            return e.getMessage();
+        }
     }
     public void checkAuth(String url, Handler handler){
         Request request = new Request.Builder().url(url+"/check_session.php").build();

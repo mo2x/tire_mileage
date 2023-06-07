@@ -29,26 +29,26 @@ public class TireTable extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentTireTableBinding.inflate(inflater, container, false);
-        viewModel.allTires.observe(getViewLifecycleOwner(), tires -> {
-            binding.tireTable.clearData();
-            if (tires != null) {
-                for (Tire tire:tires) {
-                    List<String> raw = Arrays.asList(
-                            tire.serialNumber,
-                            String.valueOf(tire.km),
-                            tire.tSize,
-                            String.valueOf(tire.treadDepth),
-                            String.valueOf(tire.tkph),
-                            String.valueOf(tire.kpa),
-                            String.valueOf(tire.p_kph),
-                            tire.maker_name,
-                            tire.vin,
-                            tire.pos
-                    );
-                    binding.tireTable.addRaw(raw);
-                }
-            }
-        });
+//        viewModel.allTires.observe(getViewLifecycleOwner(), tires -> {
+//            binding.tireTable.clearData();
+//            if (tires != null) {
+//                for (Tire tire:tires) {
+//                    List<String> raw = Arrays.asList(
+//                            tire.serialNumber,
+//                            String.valueOf(tire.km),
+//                            tire.tSize,
+//                            String.valueOf(tire.treadDepth),
+//                            String.valueOf(tire.tkph),
+//                            String.valueOf(tire.kpa),
+//                            String.valueOf(tire.p_kph),
+//                            tire.maker_name,
+//                            tire.vin,
+//                            tire.pos
+//                    );
+//                    binding.tireTable.addRaw(raw);
+//                }
+//            }
+//        });
         return binding.getRoot();
     }
     /*

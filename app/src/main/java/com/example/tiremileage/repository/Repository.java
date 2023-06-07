@@ -10,8 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.tiremileage.customItems.Status;
 import com.example.tiremileage.net.JSONParser;
 import com.example.tiremileage.net.OkHTTPModule;
-import com.example.tiremileage.room.DataBase;
 import com.example.tiremileage.room.Entities.Car;
+import com.example.tiremileage.room.Entities.Model;
 import com.example.tiremileage.room.Entities.Tire;
 import com.example.tiremileage.views.constructor.ConstructorViewModel;
 import okhttp3.Cookie;
@@ -27,7 +27,8 @@ public class Repository {
     SharedPreferences sharedPreferences;
     OkHTTPModule okHTTPModule;
     String scriptUrl = "http://f0822897.xsph.ru";
-    boolean isRequested = false;
+    boolean isRequestedCar = false;
+    boolean isRequestedModel = false;
     public MutableLiveData<String> currentSpinVin = new MutableLiveData<>();
 
     public Repository(Application application){
@@ -42,36 +43,55 @@ public class Repository {
         okHTTPModule.authorization(scriptUrl, login, password, handler);
     }
     public void getCars(String search, int firstEl, int countEl, ConstructorViewModel viewModel){
-        if (isRequested) return;
+        if (isRequestedCar) return;
         new Thread(() -> {
-            isRequested = true;
+            isRequestedCar = true;
             String stringJSON = okHTTPModule.getCarsJSON(scriptUrl, search, firstEl, countEl);
             try {
                 if (stringJSON.equals("timeout")) {
-                    viewModel.setStatus(Status.NO_INTERNET);
+                    viewModel.postStatus(Status.NO_INTERNET);
                 } else if (stringJSON.charAt(0)!='[') {
-                    viewModel.setStatus(Status.NO_SERVER_RESPONSE);
+                    viewModel.postStatus(Status.NO_SERVER_RESPONSE);
                 } else if (stringJSON.equals("[]")) {
-                    viewModel.setStatus(Status.ALL_LOADED);
+                    viewModel.postStatus(Status.ALL_LOADED);
                 } else {
                     List<Car> cars = new ArrayList<>(Arrays.asList(JSONParser.getCars(stringJSON)));
                     viewModel.addCars(cars);
-                    viewModel.setStatus(Status.LOADED);
+                    viewModel.postStatus(Status.LOADED);
                 }
             } catch (JSONException | IOException e) {
                 throw new RuntimeException(e);
             }
-            isRequested = false;
+            isRequestedCar = false;
         }).start();
     }
-    public void getModel(int model){
+    public void getModel(String model, ConstructorViewModel viewModel){
+        if (isRequestedModel) return;
+        isRequestedModel = true;
         new Thread(() -> {
-            String stringJSON = okHTTPModule.getModel(scriptUrl, model);
+            String stringJSON = okHTTPModule.getModelJSON(scriptUrl, model);
+            try {
+                Model retModel = JSONParser.getConnectors(stringJSON, application.getApplicationContext(),model);
+                String string = okHTTPModule.getTiresJSON(scriptUrl, viewModel.getVin(), null);
+                Tire[] tires = JSONParser.getTires(string);
+                for (int i = 0; i < tires.length; i++){
+                    for (int j = 0; j<retModel.connectors.length; j++){
+                        if (Integer.parseInt(tires[i].pos) == retModel.connectors[j].getPosition()){
+                            retModel.connectors[j].setTire(tires[i]);
+                            break;
+                        }
+                    }
+                }
+                viewModel.postModelMap(retModel);
+            } catch (JSONException | IOException e) {
+                throw new RuntimeException(e);
+            }
+            isRequestedModel = false;
         }).start();
     }
     public void getTires(){
         new Thread(() -> {
-            okHTTPModule.getTires(scriptUrl);
+            //okHTTPModule.getTires(scriptUrl);
         }).start();
     }
     public synchronized  void saveCookie(Cookie cookie){
@@ -110,102 +130,10 @@ public class Repository {
             okHTTPModule = new OkHTTPModule();
         }
         okHTTPModule.clear();
-        new Thread(() -> {
-            DataBase.getDataBase(application.getApplicationContext()).clearAllTables();
-        }).start();
-
     }
     public void checkAuthAsync(Handler handler){
         new Thread(() -> {
             okHTTPModule.checkAuth(scriptUrl, handler);
         }).start();
-    }
-    public LiveData<List<Tire>> getAllTires(Context context){
-        return LiveDataReactiveStreams
-                .fromPublisher(DataBase
-                        .getDataBase(context.getApplicationContext())
-                        .tireDao()
-                        .getAllTires());
-    }
-    public LiveData<List<Car>> getAllTracks(Context context){
-        return LiveDataReactiveStreams
-                .fromPublisher(DataBase
-                        .getDataBase(context.getApplicationContext())
-                        .carDao()
-                        .getAllCars());
-    }
-    public void update(Context context, Tire tire){
-        UpdateThread updateThread = new UpdateThread(context, tire);
-        updateThread.start();
-    }
-
-    public void updateTirePosByID(Context context, int tireID, String newPos){
-        UpdateTirePosByIDThread updateThread = new UpdateTirePosByIDThread(context, tireID, newPos);
-        updateThread.start();
-    }
-
-    public void insert(Tire[] tires){
-        InsertThread insertThread = new InsertThread(application.getApplicationContext(), tires);
-        insertThread.start();
-    }
-    public void insert(Car[] cars){
-        InsertThread insertThread = new InsertThread(application.getApplicationContext(), cars);
-        insertThread.start();
-    }
-    private static class UpdateTirePosByIDThread extends Thread{
-        Context context;
-        int tireID;
-        String pos;
-        UpdateTirePosByIDThread(Context context, int tireID, String pos){
-            this.context = context;
-            this.tireID = tireID;
-            this.pos = pos;
-        }
-        @Override
-        public void run() {
-            Tire tire = DataBase
-                    .getDataBase(context.getApplicationContext())
-                    .tireDao()
-                    .getTireByID(tireID);
-
-            tire.pos = pos;
-
-            DataBase
-                    .getDataBase(context.getApplicationContext())
-                    .tireDao()
-                    .update(tire);
-        }
-    }
-    private static class UpdateThread extends Thread{
-        Context context;
-        Tire tire;
-        private UpdateThread(Context context, Tire tire){
-            this.tire = tire;
-            this.context = context;
-        }
-        @Override
-        public void run() {
-            DataBase.getDataBase(context.getApplicationContext()).tireDao().update(tire);
-        }
-    }
-    private static class InsertThread extends Thread{
-        Context context;
-        Tire[] tires;
-        Car[] cars;
-        private InsertThread(Context context, Tire[] tires){
-            this.cars = new Car[0];
-            this.tires = tires;
-            this.context = context;
-        }
-        private InsertThread(Context context, Car[] cars){
-            this.cars = cars;
-            this.tires = new Tire[0];
-            this.context = context;
-        }
-        @Override
-        public void run() {
-            DataBase.getDataBase(context.getApplicationContext()).tireDao().insertAllTires(tires);
-            DataBase.getDataBase(context.getApplicationContext()).carDao().insertAllCars(cars);
-        }
     }
 }

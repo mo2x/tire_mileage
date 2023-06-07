@@ -5,15 +5,16 @@ import android.app.Dialog;
 import android.content.ClipDescription;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.DragEvent;
-import android.widget.AbsListView;
-import android.widget.ListAdapter;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,9 +28,11 @@ import com.example.tiremileage.R;
 import com.example.tiremileage.customItems.Status;
 import com.example.tiremileage.databinding.DialogSearchableSpinnerBinding;
 
+import com.example.tiremileage.databinding.EmptyBinding;
 import com.example.tiremileage.databinding.FragmentConstructorBinding;
 import com.example.tiremileage.repository.RepositoryManager;
-import com.example.tiremileage.room.Entities.Car;
+import com.example.tiremileage.room.Entities.Model;
+import com.example.tiremileage.room.Entities.Tire;
 import com.example.tiremileage.views.constructor.RecycleViewVin.VinAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,6 +44,7 @@ import static com.example.tiremileage.customItems.Status.*;
 
 public class Constructor extends Fragment {
 
+    EmptyBinding emptyBinding;
     FragmentConstructorBinding binding;
     ConstructorViewModel viewModel;
     boolean isIn;
@@ -58,7 +62,49 @@ public class Constructor extends Fragment {
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentConstructorBinding.inflate(inflater, container, false);
-
+        viewModel.model.observe(getViewLifecycleOwner(), model -> {
+            if (model==null){
+                if (binding.FL.getChildCount()>0){
+                    ViewGroup view = (ViewGroup) binding.FL.getChildAt(1);
+                    view.removeAllViews();
+                }
+                binding.FL.removeAllViews();
+            } else {
+                binding.FL.removeAllViews();
+                emptyBinding = EmptyBinding.inflate(inflater, binding.FL);
+                emptyBinding.connectorLayout.removeAllViews();
+                ViewGroup viewGroup = (ViewGroup) model.connectors[0].getParent();
+                if (viewGroup != null)
+                    viewGroup.removeAllViews();
+                for (int i = 0; i< model.connectors.length; i++){
+                    ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(0,0);
+                    if (model.connectors[i].getTire() == null)
+                        model.connectors[i].setBackground(ContextCompat.getDrawable(getContext(),R.drawable.connector));
+                        else
+                    {
+                        int drawID = getResources().getIdentifier
+                                (model.connectors[i].getTire().pic.replace(".png",""),
+                                        "drawable",
+                                        getContext().getPackageName());
+                        Drawable drawable = getResources().getDrawable(drawID);
+                        model.connectors[i].setBackground(drawable);
+                    }
+                    emptyBinding.constructorImageView.setImageResource(getResources().getIdentifier(
+                            "m"+model.modelSn,"drawable",getContext().getPackageName()
+                    ));
+                    params.bottomToBottom = emptyBinding.connectorLayout.getId();
+                    params.startToStart = emptyBinding.connectorLayout.getId();
+                    params.topToTop = emptyBinding.connectorLayout.getId();
+                    params.endToEnd = emptyBinding.connectorLayout.getId();
+                    params.horizontalBias = (float) (model.connectors[i].getLeftDouble());
+                    params.verticalBias = (float) (model.connectors[i].getTopDouble());
+                    params.matchConstraintPercentWidth = (float) model.connectors[i].getWidthP();
+                    params.matchConstraintPercentHeight = (float) model.connectors[i].getHeightP();
+                    model.connectors[i].setLayoutParams(params);
+                    emptyBinding.connectorLayout.addView(model.connectors[i]);
+                }
+            }
+        });
         viewModel.currentVin.observe(getViewLifecycleOwner(), s -> {
             if (s == null || s.equals("")) {
                 binding.vinButton.setText("VIN don't set");
@@ -98,7 +144,7 @@ public class Constructor extends Fragment {
                     }
                     CharSequence draggedData = event.getClipData().getItemAt(0).getText();
                     int tireID = Integer.parseInt(draggedData.toString());
-                    RepositoryManager.getRepository().updateTirePosByID(requireContext(),tireID, "0");
+                    //RepositoryManager.getRepository().updateTirePosByID(requireContext(),tireID, "0");
                     break;
                 default: break;
             }
@@ -120,27 +166,27 @@ public class Constructor extends Fragment {
 
             vinAdapter.setOnClickListener(car -> {
                 viewModel.currentVin.postValue(car.vin);
+                viewModel.getModel(car.model);
                 dialog.dismiss();
             });
 
             dialogBinding.editTextTextPersonName2.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
                 }
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     viewModel.clearCars();
-                    viewModel.setStatus(IS_LOADING);
                 }
                 @Override
                 public void afterTextChanged(Editable s) {
+                    viewModel.setRecyclerViewStatus(IS_LOADING);
                     viewModel.loadPoolObj(dialogBinding.editTextTextPersonName2.getText().toString());
                 }
             });
 
             dialogBinding.vinRecView.setLayoutManager(manager);
-            viewModel.status.observe(getViewLifecycleOwner(), status -> {
+            viewModel.recyclerViewStatus.observe(getViewLifecycleOwner(), status -> {
                 switch (status){
                     case ALL_LOADED:
                     case LOADED:
@@ -213,8 +259,8 @@ public class Constructor extends Fragment {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
 
             dialog.setOnDismissListener(dialog -> {
-                viewModel.setStatus(Status.IS_LOADING);
-                viewModel.carPool.postValue(new ArrayList<>());
+                viewModel.postStatus(Status.IS_LOADING);
+                viewModel.carPool.setValue(new ArrayList<>());
             });
 
             dialog.show();

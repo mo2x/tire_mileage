@@ -9,10 +9,8 @@ import com.example.tiremileage.room.Entities.Tire;
 import java.util.List;
 
 public class TireTableViewModel extends AndroidViewModel {
-    LiveData<List<Tire>> allTires;
 
     public TireTableViewModel(Application application){
         super(application);
-        allTires = RepositoryManager.getRepository().getAllTires(application.getApplicationContext());
     }
 }

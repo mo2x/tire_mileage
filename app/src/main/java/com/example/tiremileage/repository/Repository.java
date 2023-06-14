@@ -44,10 +44,6 @@ public class Repository {
     public void initOkHTTPModule(){
         okHTTPModule = new OkHTTPModule();
     }
-
-    public void authorization(String login, String password, Handler handler){
-        okHTTPModule.authorization(scriptUrl, login, password, handler);
-    }
     public void getCars(String search, int firstEl, int countEl, ConstructorViewModel viewModel){
         if (isRequestedCar) return;
         new Thread(() -> {
@@ -172,48 +168,6 @@ public class Repository {
             } catch (JSONException | ParseException e) {
                 throw new RuntimeException(e);
             }
-        }).start();
-    }
-    public synchronized  void saveCookie(Cookie cookie){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("cookie.value", cookie.value());
-        editor.putString("cookie.domain", cookie.domain());
-        editor.putString("cookie.name", cookie.name());
-        editor.putString("cookie.path", cookie.path());
-        editor.apply();
-    }
-    public List<Cookie> loadCookie(){
-        if (sharedPreferences.getString("cookie.domain", "").equals("")){
-            return null;
-        }
-        Cookie cookie = new Cookie.Builder()
-                .domain(sharedPreferences.getString("cookie.domain", ""))
-                .value(sharedPreferences.getString("cookie.value", ""))
-                .name(sharedPreferences.getString("cookie.name", ""))
-                .path(sharedPreferences.getString("cookie.path", ""))
-                .secure()
-                .build();
-        List<Cookie> list = new ArrayList<Cookie>();
-        list.add(cookie);
-        return list;
-    }
-    public void clearSession(){
-        new Thread(() -> {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.remove("cookie.value");
-            editor.remove("cookie.domain");
-            editor.remove("cookie.name");
-            editor.remove("cookie.path");
-            editor.apply();
-        });
-        if (okHTTPModule == null){
-            okHTTPModule = new OkHTTPModule();
-        }
-        okHTTPModule.clear();
-    }
-    public void checkAuthAsync(Handler handler){
-        new Thread(() -> {
-            okHTTPModule.checkAuth(scriptUrl, handler);
         }).start();
     }
 }

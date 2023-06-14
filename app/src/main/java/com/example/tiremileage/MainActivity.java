@@ -37,10 +37,6 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         setContentView(view);
     }
 
-    public void startLogin() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
@@ -48,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
             case (R.id.constructor_navigation_item): navController.navigate(R.id.constructor);  break;
             case (R.id.tire_navigation_item): navController.navigate(R.id.tireTable); break;
             case (R.id.analytics_navigation_item): navController.navigate(R.id.analyticsFragment);  break;
-            case (R.id.about_proj_navigation_item): navController.navigate(R.id.aboutProgram);  break;
         }
         return true;
     }

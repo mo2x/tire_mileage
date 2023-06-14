@@ -29,8 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OkHTTPModule {
-    private final MyCookieJar cookieJar = new MyCookieJar();
-    private final OkHttpClient client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
+    private final OkHttpClient client = new OkHttpClient.Builder().build();
 
     public String getModelJSON(String url, String model){
         String requestURL = url + "/get_models.php?"
@@ -115,48 +114,6 @@ public class OkHTTPModule {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        ;
-    }
-    public void checkAuth(String url, Handler handler){
-        Request request = new Request.Builder().url(url+"/check_session.php").build();
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                throw new IOException("Запрос к серверу не был успешен: " +
-                        response.code() + " " + response.message());
-            }
-            assert response.body() != null;
-            if (response.body().string().equals("0")) {
-                handler.sendEmptyMessage(0);
-            } else {
-                handler.sendEmptyMessage(1);
-            }
-        } catch (IOException e) {
-            System.out.println("Ошибка подключения: " + e);
-        }
-    }
-    public void authorization(String url, String login, String password, Handler handler) {
-        RequestBody requestBody = new FormBody.Builder()
-                .add("login", login)
-                .add("password", password)
-                .build();
-        Request request = new Request.Builder().url(url+"/login.php").post(requestBody).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()){
-                    handler.sendEmptyMessage(0);
-                } else if (response.code() == 409){
-                    handler.sendEmptyMessage(1);
-                } else {
-                    handler.sendEmptyMessage(2);
-                }
-            }
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-                handler.sendEmptyMessage(-1);
-            }
-        });
     }
     public static boolean hasConnection(final Context context) {
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -173,32 +130,5 @@ public class OkHTTPModule {
             return true;
         }
         return false;
-    }
-
-    public void clear(){
-        cookieJar.clear();
-    }
-    private static class MyCookieJar implements CookieJar {
-        private List<Cookie> cookies;
-        public MyCookieJar(){
-            cookies = RepositoryManager.getRepository().loadCookie();
-        }
-
-        public void clear(){
-            cookies = null;
-        }
-        @Override
-        public void saveFromResponse(@NotNull HttpUrl url, @NotNull List<Cookie> cookies) {
-            this.cookies =  cookies;
-            new Thread(() -> {
-                RepositoryManager.getRepository().saveCookie(cookies.get(0));
-            }).start();
-        }
-        @Override
-        public @NotNull List<Cookie> loadForRequest(@NotNull HttpUrl url) {
-            if (cookies != null)
-                return cookies;
-            return new ArrayList<>();
-        }
     }
 }

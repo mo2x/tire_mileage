@@ -9,6 +9,4 @@
               android:label="fragment_tire_table" tools:layout="@layout/fragment_tire_table"/>
     <fragment android:id="@+id/analyticsFragment" android:name="com.example.tiremileage.views.analytic.Analytic"
               android:label="fragment_analytics" tools:layout="@layout/fragment_analytics"/>
-    <fragment android:id="@+id/aboutProgram" android:name="com.example.tiremileage.views.about_program.AboutProgram"
-              android:label="fragment_about_program" tools:layout="@layout/fragment_about_program"/>
 </navigation>

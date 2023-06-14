@@ -3,8 +3,13 @@ package com.example.tiremileage.room.Entities;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "monitor")
+import java.util.Date;
+
 public class Monitor {
-    @PrimaryKey
     public int id;
+    public Date date;
+    public int tireId;
+    public double temperature;
+    public double kpa;
+    public double tread_depth;
 }

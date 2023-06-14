@@ -1,4 +1,4 @@
-package com.example.tiremileage.views.constructor.RecycleViewVin;
+package com.example.tiremileage.views.constructor.RecycleViewAdapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -45,11 +45,9 @@ public class VinAdapter extends RecyclerView.Adapter<VinAdapter.VinViewHolder> {
     public int getItemCount() {
         return cars.size();
     }
-
     public void setOnClickListener(OnClickListener onClickListener){
         this.onClickListener = onClickListener;
     }
-
     public interface OnClickListener {
         void onClick(Car car);
     }

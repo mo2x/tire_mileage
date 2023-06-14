@@ -7,7 +7,6 @@ import android.os.Handler;
 import com.example.tiremileage.repository.RepositoryManager;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
 
 /*.cookieJar(new CookieJar() {
         private final HashMap<HttpUrl, List<Cookie>> cookieStore = new HashMap<>();
@@ -57,7 +56,20 @@ public class OkHTTPModule {
             return e.getMessage();
         }
     }
-    public String getTiresJSON(String url, String vin, String[] tireSizes){
+    public String getMonitorJSON(String url,int tireID){
+        FormBody.Builder builder = new FormBody.Builder();
+        builder.add("tire", String.valueOf(tireID));
+        FormBody formBody = builder.build();
+        String requestURL = url + "/get_monitor.php";
+        Request request = new Request.Builder().url(requestURL).post(formBody).build();
+        try {
+            String response = client.newCall(request).execute().body().string();
+            return response;
+        } catch (IOException e) {
+            return e.getMessage();
+        }
+    }
+    public String getTiresJSONByVin(String url, String vin){
         FormBody.Builder builder = new FormBody.Builder();
         if (vin != null){
             builder.add("VIN",vin);
@@ -70,6 +82,40 @@ public class OkHTTPModule {
         } catch (IOException e) {
             return e.getMessage();
         }
+    }
+    public String getTiresJSONNoVin(String url, String[] tireSizes, String search, int firstEl, int itemCount){
+        FormBody.Builder builder = new FormBody.Builder();
+        for (int i =0;i<tireSizes.length;i++){
+            builder.add("tireSizes"+i,tireSizes[i]);
+        }
+        builder.add("search", search);
+        builder.add("firstEl", String.valueOf(firstEl));
+        builder.add("itemCount", String.valueOf(itemCount));
+
+        FormBody formBody = builder.build();
+        Request request = new Request.Builder().post(formBody).url(url+"/get_tire_by_vin.php").build();
+        try {
+            String response = client.newCall(request).execute().body().string();
+            return response;
+        } catch (IOException e) {
+            return e.getMessage();
+        }
+    }
+    public void postTireVin(String url, String tireID, int pos, String vin){
+        FormBody.Builder builder = new FormBody.Builder();
+        builder.add("tire_id", tireID);
+        builder.add("tire_pos", String.valueOf(pos));
+        builder.add("tire_vin", vin);
+        FormBody formBody = builder.build();
+        Request request = new Request.Builder().post(formBody).url(url+"/post_tire.php").build();
+
+        try {
+            String responce = client.newCall(request).execute().body().string();
+            System.out.println(responce);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        ;
     }
     public void checkAuth(String url, Handler handler){
         Request request = new Request.Builder().url(url+"/check_session.php").build();

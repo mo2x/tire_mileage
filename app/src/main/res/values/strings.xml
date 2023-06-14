@@ -33,5 +33,16 @@
     <string name="search_vin">Search</string>
     <string name="refresh_string">Refresh</string>
     <string name="no_server_response">Server no answer</string>
+    <string name="settings">Settings</string>
+    <string name="milliage">Milliage</string>
+    <string name="tire_chamber">Tire Chamber</string>
+    <string name="tread_depth">Tread Depth</string>
+    <string name="productivity">Productivity</string>
+    <string name="current_pressure">Current pressure</string>
+    <string name="nominal_pressure">Nominal pressure</string>
+    <string name="maker_name">Maker Name</string>
+    <string name="vin">VIN</string>
+    <string name="pos">Position</string>
+    <string name="temperature">Temperature</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

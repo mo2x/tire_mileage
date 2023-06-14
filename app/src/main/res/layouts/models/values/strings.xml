@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="no_internet">no internet connection</string>
+    <string name="serial_number">Serial Number</string>
+    <string name="id">Id</string>
 </resources>

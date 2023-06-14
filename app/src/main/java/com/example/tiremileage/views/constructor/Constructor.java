@@ -31,12 +31,13 @@ import com.example.tiremileage.databinding.DialogSearchableSpinnerBinding;
 import com.example.tiremileage.databinding.EmptyBinding;
 import com.example.tiremileage.databinding.FragmentConstructorBinding;
 import com.example.tiremileage.repository.RepositoryManager;
-import com.example.tiremileage.room.Entities.Model;
 import com.example.tiremileage.room.Entities.Tire;
-import com.example.tiremileage.views.constructor.RecycleViewVin.VinAdapter;
+import com.example.tiremileage.views.constructor.RecycleViewAdapters.TireAdapter;
+import com.example.tiremileage.views.constructor.RecycleViewAdapters.VinAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -62,11 +63,34 @@ public class Constructor extends Fragment {
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentConstructorBinding.inflate(inflater, container, false);
+        LinearLayoutManager linearLayoutManager
+                = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+        binding.recyclerView.setLayoutManager(linearLayoutManager);
+        TireAdapter tireAdapter = new TireAdapter();
+        binding.recyclerView.setAdapter(tireAdapter);
+
+        viewModel.tireViewStatus.observe(getViewLifecycleOwner(), status -> {
+            switch (status){
+                case IS_LOADING: viewModel.getTires(binding.editTextTextPersonName3.getText().toString());
+            }
+        });
+        viewModel.tirePool.observe(getViewLifecycleOwner(), tires -> {
+            tireAdapter.setTires(tires);
+            tireAdapter.notifyDataSetChanged();
+        });
+
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull @NotNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
         viewModel.model.observe(getViewLifecycleOwner(), model -> {
             if (model==null){
                 if (binding.FL.getChildCount()>0){
                     ViewGroup view = (ViewGroup) binding.FL.getChildAt(1);
                     view.removeAllViews();
+                    viewModel.postTireViewStatus(ALL_LOADED);
                 }
                 binding.FL.removeAllViews();
             } else {
@@ -76,6 +100,7 @@ public class Constructor extends Fragment {
                 ViewGroup viewGroup = (ViewGroup) model.connectors[0].getParent();
                 if (viewGroup != null)
                     viewGroup.removeAllViews();
+
                 for (int i = 0; i< model.connectors.length; i++){
                     ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(0,0);
                     if (model.connectors[i].getTire() == null)
@@ -87,7 +112,7 @@ public class Constructor extends Fragment {
                                         "drawable",
                                         getContext().getPackageName());
                         Drawable drawable = getResources().getDrawable(drawID);
-                        model.connectors[i].setBackground(drawable);
+                        model.connectors[i].setImageDrawable(drawable);
                     }
                     emptyBinding.constructorImageView.setImageResource(getResources().getIdentifier(
                             "m"+model.modelSn,"drawable",getContext().getPackageName()
@@ -112,8 +137,7 @@ public class Constructor extends Fragment {
                 binding.vinButton.setText("VIN: "+s);
             }
         });
-
-        binding.horizontalScrollView.setOnDragListener((v, event) -> {
+        binding.recyclerView.setOnDragListener((v, event) -> {
             View dragView =(View) event.getLocalState();
             switch(event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
@@ -143,8 +167,7 @@ public class Constructor extends Fragment {
                         return false;
                     }
                     CharSequence draggedData = event.getClipData().getItemAt(0).getText();
-                    int tireID = Integer.parseInt(draggedData.toString());
-                    //RepositoryManager.getRepository().updateTirePosByID(requireContext(),tireID, "0");
+                    RepositoryManager.getRepository().postTire(draggedData.toString(), 0, "NULL");
                     break;
                 default: break;
             }
@@ -231,15 +254,16 @@ public class Constructor extends Fragment {
                         break;
                 }
             });
+            viewModel.loadPoolObj(dialogBinding.editTextTextPersonName2.getText().toString());
+            dialogBinding.vinRecView.setAdapter(vinAdapter);
             viewModel.carPool.observe(getViewLifecycleOwner(), cars -> {
                 dialogBinding.progressBar2.setVisibility(INVISIBLE);
                 dialogBinding.button2.setVisibility(INVISIBLE);
                 dialogBinding.statusTextView.setVisibility(INVISIBLE);
                 vinAdapter.setCars(cars);
-                dialogBinding.vinRecView.setAdapter(vinAdapter);
+                vinAdapter.notifyDataSetChanged();
             });
 
-            viewModel.loadPoolObj(dialogBinding.editTextTextPersonName2.getText().toString());
 
             dialogBinding.vinRecView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override

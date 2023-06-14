@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import com.example.tiremileage.repository.Repository;
+import com.example.tiremileage.repository.RepositoryManager;
 import com.example.tiremileage.room.Entities.Tire;
 import org.jetbrains.annotations.Nullable;
 import com.example.tiremileage.R;
@@ -26,6 +28,7 @@ public class Connector extends androidx.appcompat.widget.AppCompatImageView {
     private double top;
     private double heightP;
     private double widthP;
+    private String parentVin;
     public Connector(Context context) {
         super(context);
         init(context,null, 0);
@@ -53,11 +56,10 @@ public class Connector extends androidx.appcompat.widget.AppCompatImageView {
             toast.show();
         });
         setOnLongClickListener(v -> {
-            if (getDrawable() == null || tire == null)
+            if (tire == null)
                 return false;
             ClipData.Item item = new ClipData.Item(String.valueOf(tire.id));
             String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-
             ClipData dragData = new ClipData("tire",mimeTypes, item);
 
             Drawable back = getBackground();
@@ -68,7 +70,6 @@ public class Connector extends androidx.appcompat.widget.AppCompatImageView {
                 v.setVisibility(INVISIBLE);
                 v.startDragAndDrop(dragData, myShadow, v, 0);
                 setBackground(back);
-
             }
             return true;
         });
@@ -105,7 +106,8 @@ public class Connector extends androidx.appcompat.widget.AppCompatImageView {
                         return false;
                     }
                     CharSequence draggedData = event.getClipData().getItemAt(0).getText();
-                    tire.id = Integer.parseInt(draggedData.toString());
+                    RepositoryManager.getRepository().postTire(draggedData.toString(), getPosition(), parentVin);
+
                     //RepositoryManager.getRepository().updateTirePosByID(context,tireID,String.valueOf(position));
                     break;
 
@@ -163,5 +165,12 @@ public class Connector extends androidx.appcompat.widget.AppCompatImageView {
     }
     public Tire getTire() {
         return tire;
+    }
+    public void setParentVin(String parentVin) {
+        this.parentVin = parentVin;
+    }
+
+    public String getParentVin() {
+        return parentVin;
     }
 }

@@ -5,8 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".views.tiregrid.TireTable">
-    <com.example.tiremileage.customItems.CustomTable
+    <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:table_columns="@array/tires" android:id="@+id/tireTable"/>
+            android:layout_height="match_parent" android:id="@+id/tiresRecycler"/>
 </FrameLayout>

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1008779695561",
+    "project_id": "tire-millage",
+    "storage_bucket": "tire-millage.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008779695561:android:9480e65d1549159ae14418",
+        "android_client_info": {
+          "package_name": "com.example.tiremileage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1008779695561-vn8t0c3ejerr9rnvfs3b6e4tgd74beu7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1OWfNUyALYwgX3kkpORR56mBVvQQMuVQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1008779695561-vn8t0c3ejerr9rnvfs3b6e4tgd74beu7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

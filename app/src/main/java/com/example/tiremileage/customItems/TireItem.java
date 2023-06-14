@@ -29,8 +29,8 @@ public class TireItem extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.tire_item, this, true);
         imageView = findViewById(R.id.imageView);
         serNum = findViewById(R.id.serial_number);
-        millage = findViewById(R.id.mileage);
-        pressure = findViewById(R.id.pressure);
+        millage = findViewById(R.id.tireSize);
+        pressure = findViewById(R.id.tireThread);
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         setOnLongClickListener(v -> {

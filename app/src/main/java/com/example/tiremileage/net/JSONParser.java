@@ -4,6 +4,7 @@ import android.content.Context;
 import com.example.tiremileage.customItems.Connector;
 import com.example.tiremileage.room.Entities.Car;
 import com.example.tiremileage.room.Entities.Model;
+import com.example.tiremileage.room.Entities.Monitor;
 import com.example.tiremileage.room.Entities.Tire;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,6 +14,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.logging.SimpleFormatter;
 
 public class JSONParser {
 
@@ -53,7 +58,7 @@ public class JSONParser {
         return cars;
     }
 
-    public static Model getConnectors(String string,Context context,String modelSn) throws JSONException {
+    public static Model getConnectors(String string,Context context,String modelSn,String parentVin) throws JSONException {
         JSONArray items = new JSONArray(string);
         JSONObject track = items.getJSONObject(0);
         JSONObject tireMap = new JSONObject(track.getString("tire_map"));
@@ -66,6 +71,7 @@ public class JSONParser {
         Connector[] connectors = new Connector[apos.length()];
         for (int i = 0; i< apos.length(); i++) {
             connectors[i] = new Connector(context);
+            connectors[i].setParentVin(parentVin);
             JSONObject connectorObj = apos.getJSONObject(i);
 
             int tirePosition = Integer.parseInt(connectorObj.getString("id").substring(4));
@@ -91,6 +97,22 @@ public class JSONParser {
         return model;
     }
 
+    public static Monitor[] getMonitor(String string) throws JSONException, ParseException {
+        JSONArray items = new JSONArray(string);
+        Monitor[] result = new Monitor[items.length()];
+        for (int i = 0; i < items.length(); i++) {
+            JSONObject monitor = items.getJSONObject(i);
+            result[i] = new Monitor();
+            result[i].id = monitor.getInt("id");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            result[i].date = simpleDateFormat.parse(monitor.getString("data_time"));
+            result[i].tireId = monitor.getInt("tire_id");
+            result[i].temperature = monitor.getDouble("temperature");
+            result[i].kpa = monitor.getDouble("kpa");
+            result[i].tread_depth = monitor.getDouble("tread_depth");
+        }
+        return result;
+    }
     private String convertStreamToString(InputStream stream) throws IOException {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));

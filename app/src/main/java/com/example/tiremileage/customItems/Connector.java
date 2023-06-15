@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import com.example.tiremileage.R;
 
 public class Connector extends androidx.appcompat.widget.AppCompatImageView {
-
     Tire tire;
     boolean isIn = false;
     private int position;
